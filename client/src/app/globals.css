@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 6% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 20 6% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 6% 10%;
+
+    --primary: 16 59% 41%; /* Burnt Terracotta #A64B2A */
+    --primary-foreground: 40 18% 87%;
+
+    --secondary: 24 6% 15%; /* Dark Walnut */
+    --secondary-foreground: 40 18% 87%;
+
+    --muted: 24 6% 15%;
+    --muted-foreground: 24 6% 40%; 
+
+    --accent: 40 43% 73%; /* Champagne Gold #D7C49E */
+    --accent-foreground: 20 6% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 24 6% 20%;
+    --input: 24 6% 20%;
+    --ring: 16 59% 41%;
+
+    --radius: 0.5rem;
+
+    /* IDE Defaults (unused) */
+    --ide-bg: 0 0% 98%; 
+    --ide-sidebar: 0 0% 95%; 
+    --ide-activity: 0 0% 90%; 
+    --ide-border: 0 0% 90%; 
+  }
+
+  .dark {
+    /* Smoky Jasper Background #1B1918 */
+    --background: 20 6% 10%; 
+    --foreground: 40 18% 87%; /* Soft Parchment #E5E0D8 */
+
+    /* Dark Walnut Surface #2A2725 */
+    --card: 24 6% 15%;
+    --card-foreground: 40 18% 87%;
+
+    --popover: 24 6% 15%;
+    --popover-foreground: 40 18% 87%;
+
+    /* Burnt Terracotta CTA #A64B2A - Using as Primary for Buttons */
+    --primary: 16 59% 41%; 
+    --primary-foreground: 40 18% 95%; /* Lighter parchment for contrast on button */
+
+    /* Deep Walnut for Secondary areas */
+    --secondary: 24 6% 20%; /* Slightly lighter than card for separation */
+    --secondary-foreground: 40 18% 87%;
+
+    --muted: 24 6% 20%; 
+    --muted-foreground: 40 10% 60%; /* Dimmed parchment */
+
+    /* Champagne Gold Accent #D7C49E */
+    --accent: 40 43% 73%; 
+    --accent-foreground: 20 6% 10%; /* Dark text on gold */
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 40 18% 87%;
+
+    /* Borders */
+    --border: 24 6% 22%; /* Lighter walnut */
+    --input: 24 6% 22%;
+    --ring: 40 43% 73%; /* Gold ring focus */
+    
+    /* IDE Dark Mode Overrides - Custom Palette */
+    --ide-bg: 20 6% 10%; /* Smoky Jasper */
+    --ide-sidebar: 24 6% 15%; /* Dark Walnut */
+    --ide-activity: 24 6% 13%; /* Slightly Darker Walnut */
+    --ide-border: 24 6% 20%; /* Border Color */
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+   /* Custom Scrollbar - Themed */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--secondary)); 
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary)); 
+  }
+}
