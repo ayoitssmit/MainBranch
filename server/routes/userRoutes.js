@@ -9,7 +9,9 @@ const {
     followUser, 
     unfollowUser,
     acceptFollowRequest,
-    rejectFollowRequest
+    rejectFollowRequest,
+    getUserByUsername,
+    getUserById
 } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -25,5 +27,9 @@ router.put('/:id/reject', protect, rejectFollowRequest);
 
 router.post('/sync-stats', protect, syncUserStats);
 router.put('/profile', protect, updateUserProfile);
+
+// Public Profile (Keep specific routes above this wildcard if any)
+router.get('/id/:id', getUserById);
+router.get('/:username', getUserByUsername);
 
 module.exports = router;

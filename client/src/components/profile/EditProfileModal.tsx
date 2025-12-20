@@ -79,7 +79,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Display Name</label>
                         <input 
                             type="text" 
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
                         />
@@ -88,7 +88,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                     <div>
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Bio</label>
                         <textarea 
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors min-h-[100px]"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors min-h-[100px]"
                             value={bio}
                             onChange={(e) => setBio(e.target.value)}
                             placeholder="Tell us about yourself..."
@@ -103,7 +103,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                                 <label className="block text-xs font-medium text-gray-400 mb-1">LeetCode Username</label>
                                 <input 
                                     type="text" 
-                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors text-sm"
                                     value={leetcodeUsername}
                                     onChange={(e) => setLeetcodeUsername(e.target.value)}
                                     placeholder="username"
@@ -113,7 +113,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                                 <label className="block text-xs font-medium text-gray-400 mb-1">Kaggle Username</label>
                                 <input 
                                     type="text" 
-                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors text-sm"
                                     value={kaggleUsername}
                                     onChange={(e) => setKaggleUsername(e.target.value)}
                                     placeholder="username"
@@ -123,7 +123,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                                 <label className="block text-xs font-medium text-gray-400 mb-1">Hugging Face Username</label>
                                 <input 
                                     type="text" 
-                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors text-sm"
                                     value={huggingfaceUsername}
                                     onChange={(e) => setHuggingfaceUsername(e.target.value)}
                                     placeholder="username"
@@ -133,7 +133,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                                 <label className="block text-xs font-medium text-gray-400 mb-1">Personal Blog URL</label>
                                 <input 
                                     type="url" 
-                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                    className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors text-sm"
                                     value={blogUrl}
                                     onChange={(e) => setBlogUrl(e.target.value)}
                                     placeholder="https://yourblog.com"
@@ -147,7 +147,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                          <div className="flex gap-2 mb-2">
                              <input 
                                 type="text"
-                                className="flex-1 bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                className="flex-1 bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                 value={newSkill}
                                 onChange={(e) => setNewSkill(e.target.value)}
                                 placeholder="Add a skill (e.g. React)"
@@ -156,7 +156,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                              <button 
                                 type="button"
                                 onClick={handleAddSkill}
-                                className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded"
+                                className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-2 rounded"
                              >
                                  <Plus size={18} />
                              </button>
@@ -185,7 +185,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }: EditProfil
                     <button 
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-medium flex items-center gap-2 disabled:opacity-50"
+                        className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded font-medium flex items-center gap-2 disabled:opacity-50"
                     >
                         {isLoading && <Loader2 className="animate-spin" size={16} />}
                         Save Changes

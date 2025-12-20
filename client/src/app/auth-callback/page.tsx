@@ -42,7 +42,7 @@ export default function AuthCallbackPage() {
 
     return (
         <div className="h-screen w-full flex flex-col items-center justify-center bg-[hsl(var(--ide-bg))] text-white">
-            <Loader2 className="w-10 h-10 animate-spin text-blue-500 mb-4" />
+            <Loader2 className="w-10 h-10 animate-spin text-cyan-500 mb-4" />
             <h2 className="text-xl font-mono">Authenticating...</h2>
             <p className="text-gray-500 mt-2">Connecting to GitHub</p>
         </div>

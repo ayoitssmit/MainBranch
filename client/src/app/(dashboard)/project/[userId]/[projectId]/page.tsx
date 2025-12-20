@@ -48,7 +48,7 @@ export default function ProjectPage() {
         }
     }, [userId, projectId]);
 
-    if (loading) return <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-blue-500" /></div>;
+    if (loading) return <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-cyan-500" /></div>;
     if (!project) return <div className="p-8 text-center text-gray-500">Project not found</div>;
 
     return (
@@ -63,7 +63,7 @@ export default function ProjectPage() {
                      <div className="flex justify-between items-start mb-4">
                         <h1 className="text-4xl font-extrabold text-white tracking-tight">{project.title}</h1>
                         {project.link && (
-                            <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                                 <ExternalLink size={18} /> Visit Project
                             </a>
                         )}
@@ -72,7 +72,7 @@ export default function ProjectPage() {
                      <div className="flex flex-wrap gap-4 text-sm text-gray-400">
                         {author && (
                             <div className="flex items-center gap-2">
-                                <User size={16} className="text-blue-400" />
+                                <User size={16} className="text-cyan-400" />
                                 <span>by <span className="text-white font-medium">{author.displayName}</span></span>
                             </div>
                         )}
@@ -114,7 +114,7 @@ export default function ProjectPage() {
                              </h3>
                              <div className="flex flex-wrap gap-2">
                                  {project.tags?.map((tag: string) => (
-                                     <span key={tag} className="px-3 py-1 bg-blue-900/20 text-blue-300 border border-blue-800/50 rounded-full text-sm">
+                                     <span key={tag} className="px-3 py-1 bg-cyan-900/20 text-cyan-300 border border-cyan-800/50 rounded-full text-sm">
                                          {tag}
                                      </span>
                                  ))}

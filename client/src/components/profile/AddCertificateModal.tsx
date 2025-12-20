@@ -40,7 +40,7 @@ export default function AddCertificateModal({ onClose, onSave }: AddCertificateM
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Certificate Name</label>
                         <input 
                             type="text" required
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             value={name} onChange={(e) => setName(e.target.value)}
                         />
                     </div>
@@ -48,7 +48,7 @@ export default function AddCertificateModal({ onClose, onSave }: AddCertificateM
                          <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Issuing Organization</label>
                          <input 
                             type="text" required
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             value={issuer} onChange={(e) => setIssuer(e.target.value)}
                          />
                     </div>
@@ -56,7 +56,7 @@ export default function AddCertificateModal({ onClose, onSave }: AddCertificateM
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Date Issued</label>
                         <input 
                             type="date"
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             value={date} onChange={(e) => setDate(e.target.value)}
                         />
                     </div>
@@ -64,7 +64,7 @@ export default function AddCertificateModal({ onClose, onSave }: AddCertificateM
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Credential URL</label>
                         <input 
                             type="url"
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             placeholder="https://..."
                             value={link} onChange={(e) => setLink(e.target.value)}
                         />
@@ -72,7 +72,7 @@ export default function AddCertificateModal({ onClose, onSave }: AddCertificateM
 
                     <div className="pt-2 flex justify-end gap-3">
                         <button type="button" onClick={onClose} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
-                        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-medium">Add Certificate</button>
+                        <button type="submit" className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded font-medium">Add Certificate</button>
                     </div>
                 </form>
             </div>

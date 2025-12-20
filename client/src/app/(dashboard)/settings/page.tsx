@@ -44,7 +44,7 @@ export default function SettingsPage() {
     if (loading) {
         return (
             <div className="h-full flex items-center justify-center">
-                <Loader2 className="animate-spin text-blue-500 w-8 h-8" />
+                <Loader2 className="animate-spin text-cyan-500 w-8 h-8" />
             </div>
         );
     }
@@ -64,13 +64,13 @@ export default function SettingsPage() {
                 <section className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden">
                     <div className="p-4 border-b border-[hsl(var(--ide-border))] bg-black/20">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                            <ShieldCheck size={18} className="text-blue-400"/> Profile & Account
+                            <ShieldCheck size={18} className="text-cyan-400"/> Profile & Account
                         </h2>
                     </div>
                     <div className="p-4 space-y-4">
                         <div className="flex items-center justify-between p-3 hover:bg-white/5 rounded transition-colors cursor-pointer" onClick={() => setIsEditing(true)}>
                             <div className="flex items-center gap-4">
-                                <div className="p-2 bg-blue-900/30 rounded text-blue-400">
+                                <div className="p-2 bg-cyan-900/30 rounded text-cyan-400">
                                     <Edit size={20} />
                                 </div>
                                 <div>

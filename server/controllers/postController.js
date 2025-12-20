@@ -105,13 +105,26 @@ const likePost = async (req, res) => {
         if (index === -1) {
             post.likes.push(req.user._id);
              // Create Notification
-             if (post.author.toString() !== req.user._id.toString()) {
-                await Notification.create({
+            if (post.author.toString() !== req.user._id.toString()) {
+                const notification = await Notification.create({
                     recipient: post.author,
                     sender: req.user._id,
                     type: 'like',
                     post: post._id
                 });
+
+                // Emit Socket Event
+                try {
+                    const { getIo } = require('../socket/socketHandler');
+                    const io = getIo();
+                    io.to(post.author.toString()).emit('new_notification', {
+                        message: `${req.user.displayName || req.user.username} liked your post`,
+                        type: 'like',
+                        notification
+                    });
+                } catch (err) {
+                    console.error('Socket Emit Error (Like):', err.message);
+                }
             }
         } else {
             post.likes.splice(index, 1);
@@ -161,13 +174,26 @@ const createComment = async (req, res) => {
         }
         
         if (recipientId.toString() !== req.user._id.toString()) {
-             await Notification.create({
+             const notification = await Notification.create({
                 recipient: recipientId,
                 sender: req.user._id,
                 type: type,
                 post: post._id,
                 commentId: comment._id
             });
+
+            // Emit Socket Event
+            try {
+                const { getIo } = require('../socket/socketHandler');
+                const io = getIo();
+                io.to(recipientId.toString()).emit('new_notification', {
+                    message: `${req.user.displayName || req.user.username} ${type === 'reply' ? 'replied to you' : 'commented on your post'}`,
+                    type: type,
+                    notification
+                });
+            } catch (err) {
+                console.error('Socket Emit Error (Comment):', err.message);
+            }
         }
 
         await comment.populate('author', 'displayName username avatarUrl');

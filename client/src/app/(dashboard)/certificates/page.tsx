@@ -18,7 +18,7 @@ export default function CertificatesPage() {
         }
     }, [loading, user, router]);
 
-    if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-blue-500 w-8 h-8" /></div>;
+    if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-cyan-500 w-8 h-8" /></div>;
     if (!user) return null;
 
     return (
@@ -32,7 +32,7 @@ export default function CertificatesPage() {
                 </div>
                 <button 
                     onClick={() => router.push('/certificate/create')} 
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-lg shadow-blue-900/20 transition-all hover:scale-105"
+                    className="bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-lg shadow-cyan-900/20 transition-all hover:scale-105"
                 >
                     <Plus size={20} /> Add Certificate
                 </button>

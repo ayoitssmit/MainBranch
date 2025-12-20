@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { MessageSquare, ThumbsUp, Send, Globe, MoreHorizontal, Loader2, Trash2 } from 'lucide-react';
+import { MessageSquare, ThumbsUp, Send, Globe, MoreHorizontal, Loader2, Trash2, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -109,13 +109,13 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
           <div className="flex items-center gap-3 mt-1 ml-1 text-[11px] text-gray-500 font-medium">
             <button
               onClick={() => handleCommentVote(comment._id)}
-              className={`hover:text-blue-400 hover:underline transition-colors ${isCommentLiked ? 'text-blue-500' : ''}`}
+              className={`hover:text-cyan-400 hover:underline transition-colors ${isCommentLiked ? 'text-cyan-500' : ''}`}
             >
               Like{comment.upvotes?.length > 0 && <span className="ml-1">{comment.upvotes.length}</span>}
             </button>
             <span>|</span>
             <button
-              className="hover:text-blue-400 hover:underline transition-colors"
+              className="hover:text-cyan-400 hover:underline transition-colors"
               onClick={() => setReplyingTo(comment._id)}
             >
               Reply
@@ -139,7 +139,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
               />
               <button
                 type="submit"
-                className="text-blue-500 hover:text-blue-400 disabled:opacity-50"
+                className="text-cyan-500 hover:text-cyan-400 disabled:opacity-50"
                 disabled={isSubmittingComment}
               >
                 Send
@@ -281,36 +281,46 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
   const canDeletePost = user && post.author && post.author._id?.toString() === user._id.toString();
 
   return (
-    <article className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-md overflow-hidden mb-3">
+    <article className="group bg-[hsl(var(--ide-bg))]/40 backdrop-blur-sm border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden mb-4 hover:border-gray-600 transition-all duration-300 relative">
+      
+      {/* Tech Corner Accent */}
+      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="w-16 h-16 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.1),transparent_70%)]" />
+      </div>
+
       {/* Header */}
-      <div className="p-3 flex gap-3 text-sm relative">
-        <img
-          src={post.author.avatarUrl || `https://ui-avatars.com/api/?name=${post.author.username}`}
-          alt={post.author.username}
-          className="w-10 h-10 rounded-full border border-gray-700"
-        />
+      <div className="p-4 flex gap-3 text-sm relative z-10">
+        <Link href={`/profile/${post.author.username}`} className="relative">
+             <div className="absolute -inset-0.5 rounded-full blur opacity-50 bg-gray-500/20 group-hover:bg-cyan-500/30 transition-colors" />
+            <img
+            src={post.author.avatarUrl || `https://ui-avatars.com/api/?name=${post.author.username}&background=0f172a&color=38bdf8`}
+            alt={post.author.username}
+            className="relative w-11 h-11 rounded-lg border border-gray-700/50 object-cover bg-black"
+            />
+        </Link>
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
             <div className="mr-6">
-              <Link href={`/post/${post.slug || post._id}`} className="font-semibold text-white leading-tight hover:text-blue-400 hover:underline cursor-pointer truncate block">
+              <Link href={`/profile/${post.author.username}`} className="font-bold text-gray-200 tracking-wide hover:text-cyan-400 transition-colors cursor-pointer truncate block">
                 {post.author.displayName || post.author.username}
               </Link>
-              <p className="text-[11px] text-gray-400 truncate leading-snug">Full Stack Developer</p>
-              <div className="flex items-center gap-1 text-[10px] text-gray-500 mt-0.5">
-                <Link href={`/post/${post.slug || post._id}`} className="hover:underline">
-                  {formatDistanceToNow(new Date(post.createdAt))}
-                </Link>
-                <span>•</span>
-                <Globe size={10} />
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="px-1.5 py-0.5 rounded-sm bg-gray-800/50 text-[10px] text-gray-400 font-mono border border-gray-700/50">
+                    {post.author.headline || "Dev_Unit"}
+                </span>
+                <span className="text-[10px] text-gray-600 font-mono flex items-center gap-1">
+                    <Clock size={10} />
+                    {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-2">
               {canDeletePost && (
-                <button className="text-red-400 hover:text-red-300" onClick={handleDeletePost}>
-                  <Trash2 size={18} />
+                <button className="text-red-900/40 hover:text-red-500 transition-colors" onClick={handleDeletePost}>
+                  <Trash2 size={16} />
                 </button>
               )}
-              <button className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-800">
+              <button className="text-gray-600 hover:text-gray-300 transition-colors">
                 <MoreHorizontal size={18} />
               </button>
             </div>
@@ -319,59 +329,69 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
       </div>
 
       {/* Content */}
-      <div className="px-3 pb-2 text-sm text-gray-200 whitespace-pre-wrap leading-relaxed">
+      <Link href={`/post/${post.slug || post._id}`} className="block px-4 pb-3 text-sm text-gray-300 whitespace-pre-wrap leading-relaxed hover:text-gray-200 transition-colors">
         {post.content}
-      </div>
+      </Link>
 
       {post.image && (
-        <div className="mt-2 mb-2">
+        <div className="mt-2 mb-2 border-y border-[hsl(var(--ide-border))] bg-black/50">
             <img 
                 src={`http://localhost:5000${post.image}`} 
                 alt="Post content" 
-                className="w-full h-auto object-cover max-h-[500px] border-y border-gray-800/50"
+                className="w-full h-auto object-cover max-h-[500px]"
             />
         </div>
       )}
 
-
+      {/* Stats Bar */}
+      <div className="px-4 py-2 border-t border-[hsl(var(--ide-border))] bg-black/10 flex items-center justify-between text-[11px] text-gray-500 font-mono uppercase tracking-wider">
+          <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                  <ThumbsUp size={12} className={post.likes?.length ? "text-cyan-500" : ""} /> {post.likes?.length || 0} Synchs
+              </span>
+              <span className="flex items-center gap-1">
+                  <MessageSquare size={12} /> {post.commentsCount || 0} Packets
+              </span>
+          </div>
+      </div>
 
       {/* Action Buttons */}
-      <div className="px-1 py-1 flex justify-between items-center bg-[hsl(var(--ide-sidebar))]">
+      <div className="grid grid-cols-4 gap-px bg-[hsl(var(--ide-border))] border-t border-[hsl(var(--ide-border))]">
         <button
           onClick={handleLike}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded hover:bg-gray-800/70 transition-colors ${isLiked ? 'text-blue-500' : 'text-gray-400'}`}
+          className={`flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors ${isLiked ? 'text-cyan-400' : 'text-gray-400'}`}
         >
           <ThumbsUp size={16} className={isLiked ? "fill-current" : ""} />
-          <span className="text-xs font-semibold">Like{post.likes?.length > 0 && <span className="ml-1">({post.likes.length})</span>}</span>
         </button>
         <button
           onClick={toggleComments}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded hover:bg-gray-800/70 transition-colors text-gray-400"
+          className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white"
         >
           <MessageSquare size={16} />
-          <span className="text-xs font-semibold">Comment</span>
         </button>
-        <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded hover:bg-gray-800/70 transition-colors text-gray-400">
+        <button className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white">
           <Send size={16} />
-          <span className="text-xs font-semibold">Send</span>
+        </button>
+        <button className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white">
+            <Globe size={16} />
         </button>
       </div>
 
       {/* Inline Comments Section */}
       {showComments && (
-        <div className="bg-black/20 p-3 animate-in fade-in duration-200">
+        <div className="bg-black/20 p-4 border-t border-[hsl(var(--ide-border))] animate-in slide-in-from-top-2 duration-200">
           {user && (
-            <div className="flex items-start gap-2 mb-4">
+            <div className="flex items-start gap-3 mb-6">
               <img
                 src={user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.username}`}
-                className="w-8 h-8 rounded-full mt-1 border border-gray-700"
+                className="w-8 h-8 rounded-lg border border-gray-700 bg-black"
                 alt="Me"
               />
               <div className="flex-1">
-                <form onSubmit={handleCommentSubmit} className="relative">
+                <form onSubmit={handleCommentSubmit} className="relative group/input">
                   <input
-                    className="w-full bg-gray-800/50 border border-gray-700 rounded-full py-2 px-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500 transition-colors"
-                    placeholder="Add a comment..."
+                    className="w-full bg-[hsl(var(--ide-bg))] border border-gray-700 rounded-md py-2 pl-3 pr-10 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-all font-mono"
+                    placeholder="Input data packet..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     autoFocus
@@ -379,10 +399,10 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
                   {newComment.trim() && (
                     <button
                       type="submit"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-400 disabled:opacity-50"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-500 hover:text-cyan-400 disabled:opacity-50"
                       disabled={isSubmittingComment}
                     >
-                      <Send size={14} fill="currentColor" />
+                      <Send size={14} />
                     </button>
                   )}
                 </form>
@@ -392,10 +412,10 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
 
           {commentsLoading ? (
             <div className="flex justify-center py-4">
-              <Loader2 className="animate-spin text-gray-500" size={20} />
+              <Loader2 className="animate-spin text-cyan-500" size={20} />
             </div>
           ) : (
-            <div className="space-y-3 pl-1">
+            <div className="space-y-4">
               {commentTree.map((c) => renderComment(c))}
             </div>
           )}

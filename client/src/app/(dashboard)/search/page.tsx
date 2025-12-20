@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { FollowButton } from '@/components/shared/FollowButton';
 
@@ -116,6 +116,11 @@ export default function SearchPage() {
                                     initialIsFollowing={user?.following?.includes(resUser._id) || false} 
                                     initialIsRequested={!!(user && resUser.followRequests?.includes(user._id))}
                                  />
+                                 <Link href={`/messages?userId=${resUser._id}`}>
+                                    <button className="mt-2 w-full p-2 flex items-center justify-center gap-2 bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--accent))] text-[hsl(var(--foreground))] rounded-md border border-[hsl(var(--border))] transition-colors text-sm font-medium">
+                                        <MessageCircle size={16} /> Message
+                                    </button>
+                                 </Link>
                              </div>
                          </div>
                      ))}

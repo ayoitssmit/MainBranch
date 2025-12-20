@@ -323,6 +323,42 @@ const rejectFollowRequest = async (req, res) => {
     }
 };
 
+// Get User by ID (Public/Private)
+const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .select('-password -__v') // Keep email hidden? Or maybe expose for messaging context if needed? Let's hide for now.
+            .populate('followers', 'username displayName avatarUrl')
+            .populate('following', 'username displayName avatarUrl');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Get User By ID Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get User by Username (Public)
+const getUserByUsername = async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username })
+            .select('-password -__v -email') // Exclude sensitive info. Email might be needed if public, but safer to hide by default.
+            .populate('followers', 'username displayName avatarUrl')
+            .populate('following', 'username displayName avatarUrl');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Get User Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 module.exports = { 
     syncUserStats, 
     updateUserProfile, 
@@ -331,5 +367,7 @@ module.exports = {
     followUser, 
     unfollowUser,
     acceptFollowRequest,
-    rejectFollowRequest
+    rejectFollowRequest,
+    getUserByUsername,
+    getUserById
 };

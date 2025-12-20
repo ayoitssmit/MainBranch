@@ -53,7 +53,7 @@ export default function LoginPage() {
         <div className="min-h-screen bg-[hsl(var(--ide-bg))] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-lg shadow-xl p-8">
                 <div className="flex flex-col items-center mb-6">
-                    <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-4 shadow-lg shadow-blue-900/20">
+                    <div className="w-16 h-16 bg-cyan-600 rounded-lg flex items-center justify-center mb-4 shadow-lg shadow-cyan-900/20">
                         <Terminal className="text-white" size={32} />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">MainBranch</h1>
@@ -95,11 +95,11 @@ export default function LoginPage() {
                         
                         {authMode === 'register' && (
                              <div className="relative group">
-                                <User className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-blue-500 transition-colors" size={18} />
+                                <User className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-cyan-500 transition-colors" size={18} />
                                 <input 
                                     type="text" 
                                     placeholder="Username" 
-                                    className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                     value={formData.username}
                                     onChange={(e) => setFormData({...formData, username: e.target.value})}
                                     required
@@ -108,11 +108,11 @@ export default function LoginPage() {
                         )}
 
                         <div className="relative group">
-                            <Mail className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-blue-500 transition-colors" size={18} />
+                            <Mail className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-cyan-500 transition-colors" size={18} />
                             <input 
                                 type="email" 
                                 placeholder="Email address" 
-                                className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                 value={formData.email}
                                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                                 required
@@ -120,11 +120,11 @@ export default function LoginPage() {
                         </div>
 
                         <div className="relative group">
-                            <Lock className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-blue-500 transition-colors" size={18} />
+                            <Lock className="absolute left-3 top-2.5 text-gray-500 group-focus-within:text-cyan-500 transition-colors" size={18} />
                             <input 
                                 type="password" 
                                 placeholder="Password" 
-                                className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                className="w-full bg-black/20 border border-gray-700 rounded h-10 pl-10 pr-3 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                 value={formData.password}
                                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                                 required
@@ -134,7 +134,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 rounded-md font-medium text-sm transition-colors disabled:opacity-50 flex items-center justify-center"
+                            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white h-10 rounded-md font-medium text-sm transition-colors disabled:opacity-50 flex items-center justify-center"
                         >
                             {isLoading ? <Loader2 className="animate-spin" size={18} /> : (authMode === 'login' ? 'Sign In' : 'Create Account')}
                         </button>
@@ -147,7 +147,7 @@ export default function LoginPage() {
                                 setAuthMode(authMode === 'login' ? 'register' : 'login');
                                 setError('');
                             }}
-                            className="text-blue-400 hover:text-blue-300 underline"
+                            className="text-cyan-400 hover:text-cyan-300 underline"
                         >
                             {authMode === 'login' ? 'Register' : 'Login'}
                         </button>

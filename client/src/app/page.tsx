@@ -5,7 +5,7 @@ import { Terminal, Code, Cpu } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-[hsl(var(--ide-bg))] text-white selection:bg-blue-500/30">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-[hsl(var(--ide-bg))] text-white selection:bg-cyan-500/30">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-800 bg-black/50 pb-6 pt-8 backdrop-blur-2xl lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-[hsl(var(--ide-sidebar))] lg:p-4 lg:dark:bg-[hsl(var(--ide-sidebar))]">
           <Terminal className="mr-2" /> MainBranch v1.0
@@ -15,15 +15,15 @@ export default function Home() {
             href="/login"
             className="flex place-items-center gap-2 p-4 lg:p-0 pointer-events-auto lg:pointer-events-auto"
           >
-            <span className="text-blue-400 hover:text-blue-300 transition-colors pointer-events-auto cursor-pointer">Login / Register &rarr;</span>
+            <span className="text-cyan-400 hover:text-cyan-300 transition-colors pointer-events-auto cursor-pointer">Login / Register &rarr;</span>
           </Link>
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-to-br before:from-transparent before:to-blue-700 before:opacity-10 before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-to-t after:from-sky-900 after:via-blue-800 after:opacity-40 after:blur-2xl after:content-[''] z-[-1]">
+      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-to-br before:from-transparent before:to-cyan-700 before:opacity-10 before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-to-t after:from-emerald-900 after:via-cyan-800 after:opacity-40 after:blur-2xl after:content-[''] z-[-1]">
         <h1 className="text-6xl font-black tracking-tight text-center">
           Code is your <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-600">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-600">
             Identity
           </span>
         </h1>

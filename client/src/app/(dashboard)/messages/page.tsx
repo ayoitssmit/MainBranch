@@ -1,0 +1,106 @@
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '@/hooks/useAuth'; // Re-use auth for token
+import ConversationList from '@/components/chat/ConversationList';
+import ChatWindow from '@/components/chat/ChatWindow';
+import { Loader2 } from 'lucide-react';
+
+import { useSearchParams } from 'next/navigation';
+
+export default function MessagesPage() {
+    const { user } = useAuth();
+    const searchParams = useSearchParams();
+    const initialUserId = searchParams.get('userId');
+    
+    const [conversations, setConversations] = useState<any[]>([]);
+    const [selectedUser, setSelectedUser] = useState<any>(null); // The user we are chatting with
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchConversationsAndTarget = async () => {
+            if (!user) return;
+            try {
+                const token = localStorage.getItem('token');
+                
+                // 1. Fetch Conversations
+                const { data: convs } = await axios.get('http://localhost:5000/api/chat/conversations', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setConversations(convs);
+
+                // 2. Handle Initial User via Query Param
+                if (initialUserId) {
+                    // Check if already in conversation list
+                    const existingConv = convs.find((c: any) => c.partner._id === initialUserId);
+                    if (existingConv) {
+                        setSelectedUser(existingConv.partner);
+                    } else {
+                        // Fetch user details to create a temporary "selectedUser" state
+                        // Assuming we have an endpoint for this, or use search.
+                        // For simplicity, let's hit /api/users/:id or similar. 
+                        // If not, we might barely have enough info from just ID.
+                        // Let's assume /api/users/profile/:id exists? Or /api/users/:id?
+                        // Let's try /api/users/profile/id/:id if exists, otherwise assume we need to fetch.
+                        // Actually, I'll just skip detailed fetch if I don't know the endpoint and rely on what I have?
+                        // "SearchPage" has user data.
+                        // Let's use a quick fetch to User detail if possible.
+                        const { data: userData } = await axios.get(`http://localhost:5000/api/users/id/${initialUserId}`, { 
+                             headers: { Authorization: `Bearer ${token}` }
+                        });
+                        setSelectedUser(userData);
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch conversations or target user", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user) fetchConversationsAndTarget();
+    }, [user, initialUserId]);
+
+    const handleSelectConversation = (partner: any) => {
+        setSelectedUser(partner);
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="animate-spin text-cyan-500" size={32} />
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex h-full bg-[hsl(var(--ide-bg))]">
+            {/* Conversation List Sidebar */}
+            <div className={`w-full md:w-80 border-r border-[hsl(var(--ide-border))] flex flex-col ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
+                <div className="p-4 border-b border-[hsl(var(--ide-border))]">
+                    <h2 className="text-xl font-bold text-white">Messages</h2>
+                </div>
+                <ConversationList 
+                    conversations={conversations} 
+                    selectedUserId={selectedUser?._id}
+                    onSelect={handleSelectConversation}
+                />
+            </div>
+
+            {/* Chat Window */}
+            <div className={`flex-1 flex flex-col ${!selectedUser ? 'hidden md:flex' : 'flex'}`}>
+                 {selectedUser ? (
+                     <ChatWindow 
+                        recipient={selectedUser} 
+                        onBack={() => setSelectedUser(null)}
+                     />
+                 ) : (
+                     <div className="flex-1 flex items-center justify-center text-gray-500">
+                         <p>Select a conversation to start chatting</p>
+                     </div>
+                 )}
+            </div>
+        </div>
+    );
+}

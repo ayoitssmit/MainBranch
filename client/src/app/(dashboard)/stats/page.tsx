@@ -11,6 +11,8 @@ export default function StatsPage() {
     const { user, loading, refreshUser } = useAuth();
     const router = useRouter();
 
+    const [syncing, setSyncing] = React.useState(false);
+
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
@@ -18,19 +20,23 @@ export default function StatsPage() {
     }, [loading, user, router]);
 
     const handleSyncStats = async () => {
+        setSyncing(true);
         try {
             const token = localStorage.getItem('token');
             await axios.post('http://localhost:5000/api/users/sync-stats', {}, {
                  headers: { Authorization: `Bearer ${token}` }
             });
             refreshUser();
-            alert("Stats synced!");
+            // Optional: Add a success toast here
         } catch (e) {
-            alert("Sync failed");
+            console.error("Sync failed", e);
+            // Optional: Add error toast here
+        } finally {
+            setSyncing(false);
         }
     }
 
-    if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-blue-500 w-8 h-8" /></div>;
+    if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-cyan-500 w-8 h-8" /></div>;
     if (!user) return null;
 
     return (
@@ -44,9 +50,11 @@ export default function StatsPage() {
                 </div>
                 <button 
                     onClick={handleSyncStats} 
-                    className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] hover:bg-gray-800 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
+                    disabled={syncing}
+                    className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] hover:bg-gray-800 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <RefreshCw size={18} /> Sync Data
+                    <RefreshCw size={18} className={syncing ? "animate-spin" : ""} /> 
+                    {syncing ? "Syncing..." : "Sync Data"}
                 </button>
             </header>
 
@@ -91,7 +99,7 @@ export default function StatsPage() {
                     {/* Kaggle Detailed Card */}
                     <div className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-xl p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <span className="text-2xl text-blue-500 font-bold">K</span>
+                            <span className="text-2xl text-cyan-500 font-bold">K</span>
                             <h3 className="text-xl font-bold text-white">Kaggle</h3>
                         </div>
                         {user.stats?.kaggle?.username ? (
@@ -109,7 +117,7 @@ export default function StatsPage() {
                                 <a 
                                     href={user.socials?.kaggle} 
                                     target="_blank"
-                                    className="block w-full text-center py-2 bg-blue-500/10 text-blue-500 rounded border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                                    className="block w-full text-center py-2 bg-cyan-500/10 text-cyan-500 rounded border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
                                 >
                                     View Profile
                                 </a>

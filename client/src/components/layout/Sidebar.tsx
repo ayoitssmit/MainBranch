@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Files, Search, GitGraph, Box, User, Settings, LayoutGrid, Bell, Briefcase, Award, BarChart2 } from 'lucide-react';
+import { Files, Search, GitGraph, Box, User, Settings, LayoutGrid, Bell, Briefcase, Award, BarChart2, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -11,9 +11,10 @@ interface SidebarItemProps {
     label: string;
     isActive?: boolean;
     onClick?: () => void;
+    badge?: boolean;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, onClick }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, onClick, badge }) => {
     return (
         <div 
             className={cn(
@@ -23,6 +24,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, 
             onClick={onClick}
         >
             <Icon size={24} strokeWidth={1.5} />
+            {badge && (
+                 <div className="absolute top-2 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[hsl(var(--ide-activity))]" />
+            )}
             {/* Tooltip */}
             <div className="absolute left-14 bg-black border border-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
                 {label}
@@ -31,13 +35,40 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, 
     );
 };
 
+import { useSocket } from '@/context/SocketContext';
+import { useState, useEffect } from 'react';
+
+// ... SidebarItem ...
+
 export function Sidebar() {
     const pathname = usePathname();
+    const { socket } = useSocket();
+    const [hasUnread, setHasUnread] = useState(false);
+
+    useEffect(() => {
+        if (!socket) return;
+        const handleNotification = () => {
+             setHasUnread(true);
+             // Optional: Play sound
+        };
+        socket.on('new_notification', handleNotification);
+        return () => {
+            socket.off('new_notification', handleNotification);
+        };
+    }, [socket]);
+
+    // Reset unread when visiting notifications page
+    useEffect(() => {
+        if (pathname === '/notifications') {
+            setHasUnread(false);
+        }
+    }, [pathname]);
 
     return (
         <div className="w-16 h-full bg-[hsl(var(--ide-activity))] flex flex-col items-center py-4 border-r border-[hsl(var(--ide-border))] z-50 gap-2">
             {/* 1. Feed */}
             <Link href="/feed">
+
                 <SidebarItem 
                     icon={LayoutGrid} 
                     label="Feed" 
@@ -78,6 +109,16 @@ export function Sidebar() {
                     icon={Bell} 
                     label="Notifications" 
                     isActive={pathname === '/notifications'} 
+                    badge={hasUnread}
+                />
+            </Link>
+
+            {/* 4.5. Messages */}
+            <Link href="/messages">
+                <SidebarItem 
+                    icon={MessageSquare} 
+                    label="Messages" 
+                    isActive={pathname === '/messages'} 
                 />
             </Link>
 
@@ -101,14 +142,7 @@ export function Sidebar() {
                 />
             </Link>
 
-            {/* 7. Compose */}
-             <Link href="/post/create">
-                <SidebarItem 
-                    icon={Files} 
-                    label="Compose" 
-                    isActive={pathname === '/post/create'} 
-                />
-            </Link>
+
             
             <div className="flex-1" /> {/* Spacer */}
             

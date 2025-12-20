@@ -59,7 +59,7 @@ export default function NotificationsPage() {
     if (authLoading || loading) {
         return (
             <div className="h-full flex items-center justify-center">
-                <Loader2 className="animate-spin text-blue-500 w-8 h-8" />
+                <Loader2 className="animate-spin text-cyan-500 w-8 h-8" />
             </div>
         );
     }
@@ -148,13 +148,13 @@ export default function NotificationsPage() {
                     notifications.map((notification) => (
                         <div 
                             key={notification._id}
-                            className={`p-4 rounded-lg border flex items-start gap-4 transition-colors ${notification.read ? 'bg-[hsl(var(--ide-sidebar))] border-[hsl(var(--ide-border))] opacity-80' : 'bg-blue-900/10 border-blue-800'}`}
+                            className={`p-4 rounded-lg border flex items-start gap-4 transition-colors ${notification.read ? 'bg-[hsl(var(--ide-sidebar))] border-[hsl(var(--ide-border))] opacity-80' : 'bg-cyan-900/10 border-cyan-800'}`}
                         >
                             {/* Icon based on type */}
                             <div className="mt-1">
                                 {notification.type === 'like' && <Heart size={20} className="text-red-500 fill-red-500" />}
                                 {notification.type === 'comment' && <MessageSquare size={20} className="text-green-500 fill-green-500" />}
-                                {notification.type === 'reply' && <Reply size={20} className="text-blue-500" />}
+                                {notification.type === 'reply' && <Reply size={20} className="text-cyan-500" />}
                             </div>
 
                             <div className="flex-1">
@@ -176,7 +176,7 @@ export default function NotificationsPage() {
                                 
                                 {notification.post && (
                                      <Link href={`/post/${notification.post.slug || notification.post._id}`}>
-                                        <div className="text-xs text-gray-500 line-clamp-2 hover:text-blue-400 hover:underline cursor-pointer border-l-2 border-gray-700 pl-2 mt-1">
+                                        <div className="text-xs text-gray-500 line-clamp-2 hover:text-cyan-400 hover:underline cursor-pointer border-l-2 border-gray-700 pl-2 mt-1">
                                             "{notification.post.content}"
                                         </div>
                                     </Link>

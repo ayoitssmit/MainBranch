@@ -1,13 +1,37 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Mail, Calendar, MapPin, ExternalLink, Github, Linkedin, Code, Award, Briefcase, Users, UserCheck, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Loader2, Mail, Calendar, Github, Linkedin, Code, Award, Briefcase, Users, UserCheck, MessageCircle } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import { FollowButton } from '@/components/shared/FollowButton';
 
-export default function ProfilePage() {
-    const { user, loading } = useAuth();
+export default function PublicProfilePage() {
+    const { username } = useParams();
+    const { user: currentUser } = useAuth();
     const router = useRouter();
+    
+    const [user, setUser] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                // If viewing own profile, redirect to private profile for editing capabilities? 
+                // Or just show public view. Let's show public view for consistent URL.
+                
+                const { data } = await axios.get(`http://localhost:5000/api/users/${username}`);
+                setUser(data);
+            } catch (error) {
+                console.error("Failed to fetch user", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (username) fetchUser();
+    }, [username]);
 
     if (loading) {
         return (
@@ -17,7 +41,15 @@ export default function ProfilePage() {
         );
     }
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="h-full flex items-center justify-center text-gray-400">
+                User not found
+            </div>
+        );
+    }
+
+    const isMe = currentUser?._id === user._id;
 
     return (
         <div className="h-full overflow-y-auto bg-[hsl(var(--ide-bg))] relative">
@@ -47,11 +79,10 @@ export default function ProfilePage() {
                         <div className="flex flex-col md:flex-row items-center md:items-start gap-4 mb-2">
                             <h1 className="text-4xl font-bold text-white tracking-tight flex items-center gap-3">
                                 {user.displayName || user.username}
-                                <span className="w-2.5 h-2.5 bg-green-500 rounded-sm" title="Online" />
                             </h1>
                             <div className="flex items-center gap-2">
                                 <span className="px-3 py-0.5 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-medium">
-                                    {user.headline || "Full Stack Developer"}
+                                    {user.headline || "Developer"}
                                 </span>
                             </div>
                         </div>
@@ -62,9 +93,26 @@ export default function ProfilePage() {
                             {user.bio || "Crafting digital experiences."}
                         </p>
 
-                        {/* Socials - Horizontal Left Aligned */}
-                        <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                             {user.socials?.github && (
+                        {/* Actions (Follow / Message) */}
+                         <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                            {!isMe && (
+                                <>
+                                    <FollowButton 
+                                        targetUserId={user._id}
+                                        initialIsFollowing={currentUser?.following?.includes(user._id) || false}
+                                        initialIsRequested={!!(currentUser && user.followRequests?.includes(currentUser._id))}
+                                    />
+                                    <button 
+                                        onClick={() => router.push(`/messages?userId=${user._id}`)}
+                                        className="px-4 py-2 bg-[hsl(var(--secondary))] text-white rounded-md border border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] transition-colors flex items-center gap-2 font-medium text-sm"
+                                    >
+                                        <MessageCircle size={16} /> Message
+                                    </button>
+                                </>
+                            )}
+                            
+                            {/* Social Icons */}
+                            {user.socials?.github && (
                                 <a href={user.socials.github} target="_blank" className="p-2 bg-gray-800/50 hover:bg-gray-800 text-gray-300 hover:text-white rounded-md border border-gray-700 transition-colors">
                                     <Github size={18} />
                                 </a>
@@ -74,9 +122,6 @@ export default function ProfilePage() {
                                     <Linkedin size={18} />
                                 </a>
                             )}
-                             <a href={`mailto:${user.email}`} className="p-2 bg-emerald-900/20 hover:bg-emerald-900/30 text-emerald-400 rounded-md border border-emerald-900/30 transition-colors">
-                                    <Mail size={18} />
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -91,7 +136,7 @@ export default function ProfilePage() {
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
                             {/* Followers */}
-                            <div className="p-4 rounded-md bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 hover:border-cyan-500/40 transition-colors group">
+                                    <div className="p-4 rounded-md bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 hover:border-cyan-500/40 transition-colors group">
                                 <div className="flex items-start justify-between mb-2">
                                      <div className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors">{user.followers?.length || 0}</div>
                                      <Users size={18} className="text-cyan-500 opacity-60" />
@@ -100,30 +145,12 @@ export default function ProfilePage() {
                             </div>
 
                             {/* Following */}
-                            <div className="p-4 rounded-md bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20 hover:border-cyan-500/40 transition-colors group">
-                                <div className="flex items-start justify-between mb-2">
-                                     <div className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors">{user.following?.length || 0}</div>
-                                     <UserCheck size={18} className="text-cyan-500 opacity-60" />
-                                </div>
-                                <div className="text-xs text-cyan-200/60 font-medium uppercase tracking-wide">Following</div>
-                            </div>
-
-                            {/* Projects */}
                             <div className="p-4 rounded-md bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 hover:border-emerald-500/40 transition-colors group">
                                 <div className="flex items-start justify-between mb-2">
-                                     <div className="text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors">{user.projects?.length || 0}</div>
-                                     <Code size={18} className="text-emerald-500 opacity-60" />
+                                     <div className="text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors">{user.following?.length || 0}</div>
+                                     <UserCheck size={18} className="text-emerald-500 opacity-60" />
                                 </div>
-                                <div className="text-xs text-emerald-200/60 font-medium uppercase tracking-wide">Projects</div>
-                            </div>
-
-                             {/* Certificates */}
-                             <div className="p-4 rounded-md bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 hover:border-amber-500/40 transition-colors group">
-                                <div className="flex items-start justify-between mb-2">
-                                     <div className="text-3xl font-bold text-white group-hover:text-amber-400 transition-colors">{user.certificates?.length || 0}</div>
-                                     <Award size={18} className="text-amber-500 opacity-60" />
-                                </div>
-                                <div className="text-xs text-amber-200/60 font-medium uppercase tracking-wide">Certificates</div>
+                                <div className="text-xs text-emerald-200/60 font-medium uppercase tracking-wide">Following</div>
                             </div>
                         </div>
                     </div>
@@ -131,15 +158,9 @@ export default function ProfilePage() {
                     {/* Skills */}
                     <div className="lg:col-span-2 bg-[hsl(var(--ide-sidebar))]/50 backdrop-blur-md border border-[hsl(var(--ide-border))] rounded-lg p-6 hover:border-gray-600 transition-colors flex flex-col">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                             <h3 className="text-gray-400 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-sm bg-[hsl(var(--accent))]" /> Expertise
                             </h3>
-                            <button 
-                                onClick={() => router.push('/settings')} // Redirect to settings to add skills
-                                className="w-8 h-8 flex items-center justify-center rounded-md bg-[hsl(var(--ide-bg))] border border-[hsl(var(--ide-border))] text-gray-400 hover:text-white hover:border-gray-500 transition-colors"
-                            >
-                                <Plus size={16} />
-                            </button>
                         </div>
 
                         <div className="flex-1">
@@ -155,49 +176,11 @@ export default function ProfilePage() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="h-full min-h-[120px] rounded-lg border-2 border-dashed border-gray-700/50 flex flex-col items-center justify-center text-center p-6 bg-black/10 hover:bg-black/20 transition-colors group cursor-pointer" onClick={() => router.push('/settings')}>
-                                    <div className="w-10 h-10 rounded-md bg-gray-800 flex items-center justify-center text-gray-500 group-hover:text-cyan-400 group-hover:scale-110 transition-all mb-3">
-                                        <Plus size={20} />
-                                    </div>
-                                    <p className="text-gray-400 font-medium group-hover:text-gray-300">Add your skills to get discovered</p>
-                                    <p className="text-xs text-gray-600 mt-1 group-hover:text-gray-500">Java, React, Python, etc.</p>
-                                </div>
+                                <div className="text-gray-500 text-sm">No skills listed.</div>
                             )}
                         </div>
-                        
-                        {/* Quick Actions */}
-                         <div className="mt-8 pt-6 border-t border-[hsl(var(--ide-border))] grid grid-cols-1 sm:grid-cols-2 gap-4">
-                             <button 
-                                onClick={() => router.push('/projects')}
-                                className="flex items-center justify-between p-4 rounded-md bg-gradient-to-r from-cyan-900/10 to-transparent border border-cyan-900/20 hover:border-cyan-500/30 group transition-all"
-                            >
-                                <span className="flex items-center gap-3 text-cyan-200">
-                                    <Briefcase size={18} /> View Projects
-                                </span>
-                                <ExternalLink size={16} className="text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                             </button>
-
-                             <button 
-                                onClick={() => router.push('/certificates')}
-                                className="flex items-center justify-between p-4 rounded-md bg-gradient-to-r from-yellow-900/10 to-transparent border border-yellow-900/20 hover:border-yellow-500/30 group transition-all"
-                            >
-                                <span className="flex items-center gap-3 text-yellow-200">
-                                    <Award size={18} /> View Certificates
-                                </span>
-                                <ExternalLink size={16} className="text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                             </button>
-                         </div>
-                    </div>
-
-                </div>
-                
-                 {/* Footer Info */}
-                <div className="mt-12 text-center text-gray-600 text-sm">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                        <Calendar size={14} /> <span>Member since {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span>
                     </div>
                 </div>
-
             </div>
         </div>
     );

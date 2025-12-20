@@ -45,20 +45,20 @@ export default function AddProjectModal({ onClose, onSave }: AddProjectModalProp
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Title</label>
                         <input 
                             type="text" required
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             value={title} onChange={(e) => setTitle(e.target.value)}
                         />
                     </div>
                     <div>
                          <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Description</label>
                          <textarea 
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors min-h-[80px]"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors min-h-[80px]"
                             value={description} onChange={(e) => setDescription(e.target.value)}
                          />
                     </div>
                     <div>
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Project Link</label>
-                        <div className="flex items-center gap-2 bg-black/30 border border-gray-700 rounded px-3 py-2 focus-within:border-blue-500 transition-colors">
+                        <div className="flex items-center gap-2 bg-black/30 border border-gray-700 rounded px-3 py-2 focus-within:border-cyan-500 transition-colors">
                             <LinkIcon size={16} className="text-gray-500" />
                             <input 
                                 type="url"
@@ -72,7 +72,7 @@ export default function AddProjectModal({ onClose, onSave }: AddProjectModalProp
                         <label className="block text-xs font-medium text-gray-400 mb-1 uppercase">Tech Stack (comma separated)</label>
                         <input 
                             type="text" 
-                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-black/30 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                             placeholder="React, Node.js, MongoDB"
                             value={tags} onChange={(e) => setTags(e.target.value)}
                         />
@@ -80,7 +80,7 @@ export default function AddProjectModal({ onClose, onSave }: AddProjectModalProp
 
                     <div className="pt-2 flex justify-end gap-3">
                         <button type="button" onClick={onClose} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
-                        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-medium">Add Project</button>
+                        <button type="submit" className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded font-medium">Add Project</button>
                     </div>
                 </form>
             </div>

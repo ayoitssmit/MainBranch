@@ -7,7 +7,14 @@ dotenv.config();
 
 connectDB();
 
+const http = require('http');
+const { initializeSocket } = require('./socket/socketHandler');
+
 const app = express();
+const server = http.createServer(app);
+
+// Initialize Socket.io
+initializeSocket(server);
 
 app.use(express.json());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
@@ -17,6 +24,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 app.get('/', (req, res) => {
     res.send('MainBranch API is running...');
@@ -24,7 +32,7 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log('Use http://localhost:5000/api/posts to test');
+    console.log('Socket.io initialized');
 });

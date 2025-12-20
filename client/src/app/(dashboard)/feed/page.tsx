@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import PostCard from '@/components/feed/PostCard';
+import CreatePostWidget from '@/components/feed/CreatePostWidget';
 import ProfileSidebar from '@/components/layout/ProfileSidebar';
 import ActivitySidebar from '@/components/layout/ActivitySidebar';
 
@@ -91,20 +92,17 @@ export default function FeedPage() {
              </div>
 
              {/* Create Post Widget */}
-            <div className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-lg p-3 mb-4">
-                <div className="flex gap-3 items-center mb-2">
-                <img
-                    src={user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.username || 'User'}`}
-                    className="w-10 h-10 rounded-full border border-gray-700"
-                    alt="Me"
-                />
-                <Link href="/post/create" className="flex-1">
-                    <div className="w-full bg-black/20 hover:bg-black/30 border border-gray-700 hover:border-gray-600 rounded-full px-4 py-2.5 text-sm text-gray-400 font-medium transition-colors text-left cursor-text">
-                    Start a post...
-                    </div>
-                </Link>
-                </div>
-            </div>
+             <CreatePostWidget onPostCreated={() => {
+                 // Refresh posts by toggling tab to trigger effect or define a fetch function
+                 // A simple hack is to re-trigger the fetch. 
+                 // Ideally I should refactor fetchPosts to be callable.
+                 // For now, I'll just reload window or router.refresh() but that's a bit heavy.
+                 // Let's toggle activeTab locally or use a key.
+                 // Better: extract fetch logic or just use router.refresh() since this is Next.js
+                 // Actually, standard react state update is better.
+                 // Let's just pass a signal.
+                 window.location.reload(); // Simplest "refresh everything" for now to catch changes
+             }} />
 
             {/* Posts Feed */}
             {loading ? (
