@@ -111,12 +111,95 @@ const syncGitHub = async (user) => {
                 }`;
                 gqlRes = await axios.post('https://api.github.com/graphql', { query: gqlQuery }, { headers });
                 totalContributions = gqlRes.data?.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions || 0;
-                console.log(`[Sync] GitHub Total Contributions: ${totalContributions}`);
+                console.log(`[Sync] GitHub Total Contributions (GraphQL): ${totalContributions}`);
             } catch (gqlError) {
                 console.warn('[Sync] GitHub GraphQL Error:', gqlError.message);
-                if (totalContributions === 0) totalContributions = commitsCount;
             }
         }
+
+        // Fallback: Scrape if GraphQL failed or no token
+        if (!gqlRes?.data?.data?.user?.contributionsCollection?.contributionCalendar) {
+            try {
+                console.log(`[Sync] Attempting GitHub scrape for ${username}...`);
+                const scrapeRes = await axios.get(`https://github.com/users/${username}/contributions`);
+                const $ = cheerio.load(scrapeRes.data);
+
+                const weeks = [];
+                let currentWeek = [];
+                let scrapedTotal = 0;
+
+                // Iterate over all days in the calendar
+                // GitHub changed structure recently to use <td> with data-date
+                $('td.ContributionCalendar-day').each((i, el) => {
+                    const date = $(el).attr('data-date');
+                    const level = $(el).attr('data-level'); // 0-4
+
+                    if (date) {
+                        // Parse count from tooltip text if possible, simpler fallback via level
+                        // Tooltip ID is usually labeled-by
+                        const toolTipId = $(el).attr('id');
+                        let count = 0;
+
+                        // Try to find the sr-only text which contains the count "No contributions" or "X contributions"
+                        const srText = $(el).find('.sr-only').text();
+                        if (srText) {
+                            const match = srText.match(/^(\d+)\s+contribution/);
+                            if (match) count = parseInt(match[1], 10);
+                            else if (srText.includes('No contribution')) count = 0;
+                        } else {
+                            // Rough estimate based on level if text parsing fails
+                            // Levels: 0=0, 1=1-3, 2=3-6, 3=6-10, 4=10+ (approx)
+                            if (level === '1') count = 2;
+                            else if (level === '2') count = 5;
+                            else if (level === '3') count = 8;
+                            else if (level === '4') count = 12;
+                        }
+
+                        scrapedTotal += count;
+
+                        currentWeek.push({
+                            contributionCount: count,
+                            date: date,
+                            color: level === '0' ? '#ebedf0' : '#216e39' // Placeholder colors
+                        });
+
+                        // Weeks usually end on Saturday (or every 7 days)
+                        // But straightforward flat list -> chunks of 7 ok for simple heatmap
+                        if (currentWeek.length === 7) {
+                            weeks.push({ contributionDays: currentWeek });
+                            currentWeek = [];
+                        }
+                    }
+                });
+
+                if (currentWeek.length > 0) weeks.push({ contributionDays: currentWeek });
+
+                // Construct a mock GraphQL-like response structure
+                if (weeks.length > 0) {
+                    gqlRes = {
+                        data: {
+                            data: {
+                                user: {
+                                    contributionsCollection: {
+                                        contributionCalendar: {
+                                            totalContributions: scrapedTotal,
+                                            weeks: weeks
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    totalContributions = scrapedTotal;
+                    console.log(`[Sync] GitHub Scrape Successful. Total: ${totalContributions}`);
+                }
+            } catch (scrapeError) {
+                console.warn('[Sync] GitHub Scrape Error:', scrapeError.message);
+            }
+        }
+
+        // If still no contribution data, fallback to commit count (mostly 0 if no token)
+        if (totalContributions === 0 && commitsCount > 0) totalContributions = commitsCount;
 
         user.integrations.github.stats = {
             followers,

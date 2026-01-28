@@ -3,16 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import api, { BASE_URL } from '@/lib/api';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, ArrowLeft, ExternalLink, Calendar, User, Code2 } from 'lucide-react';
+import { Loader2, ArrowLeft, ExternalLink, Calendar, User, Code2, Trash2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ProjectPage() {
     const params = useParams();
     const { userId, projectId } = params;
     const router = useRouter();
+    const { user: currentUser } = useAuth();
 
     const [project, setProject] = useState<any>(null);
     const [author, setAuthor] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [deleting, setDeleting] = useState(false);
 
     const getImageUrl = (path: string) => {
         if (!path) return '';
@@ -37,8 +40,28 @@ export default function ProjectPage() {
         }
     }, [userId, projectId]);
 
-    if (loading) return <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-cyan-500" /></div>;
+    const handleDelete = async () => {
+        if (!window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+            return;
+        }
+
+        setDeleting(true);
+        try {
+            await api.delete(`/users/profile/projects/${projectId}`);
+            router.push('/projects');
+        } catch (error) {
+            console.error('Failed to delete project', error);
+            alert('Failed to delete project');
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    if (loading) return <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-cyan-500 w-8 h-8" /></div>;
     if (!project) return <div className="p-8 text-center text-gray-500">Project not found</div>;
+
+    // Check if current user is the project owner
+    const isOwner = currentUser && author && currentUser._id === author._id;
 
     return (
         <div className="max-w-4xl mx-auto p-8 h-full overflow-y-auto">
@@ -51,11 +74,23 @@ export default function ProjectPage() {
                 <header className="mb-8 border-b border-gray-800 pb-8">
                     <div className="flex justify-between items-start mb-4">
                         <h1 className="text-4xl font-extrabold text-white tracking-tight">{project.title}</h1>
-                        {project.link && (
-                            <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                <ExternalLink size={18} /> Visit Project
-                            </a>
-                        )}
+                        <div className="flex gap-3">
+                            {project.link && (
+                                <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                    <ExternalLink size={18} /> Visit Project
+                                </a>
+                            )}
+                            {isOwner && (
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={deleting}
+                                    className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {deleting ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}
+                                    Delete
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex flex-wrap gap-4 text-sm text-gray-400">
@@ -75,24 +110,43 @@ export default function ProjectPage() {
                 {/* Main Content */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Image */}
-                        {project.image ? (
-                            <div className="rounded-xl overflow-hidden border border-gray-800 shadow-2xl">
-                                <img src={getImageUrl(project.image)} alt={project.title} className="w-full h-auto object-cover" />
-                            </div>
-                        ) : (
-                            <div className="h-64 bg-gray-900/50 rounded-xl flex items-center justify-center border border-gray-800 border-dashed">
-                                <p className="text-gray-600 italic">No cover image provided</p>
-                            </div>
-                        )}
-
-                        {/* Description */}
+                        {/* Description - Now First */}
                         <div>
-                            <h3 className="text-lg font-bold text-white mb-2">About this Project</h3>
+                            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                <span className="w-1 h-5 bg-cyan-500 rounded-full"></span>
+                                About this Project
+                            </h3>
                             <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
                                 {project.description}
                             </p>
                         </div>
+
+                        {/* Images - Now Second */}
+                        {((project.images && project.images.length > 0) || project.image) && (
+                            <div>
+                                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                    <span className="w-1 h-5 bg-purple-500 rounded-full"></span>
+                                    Project Gallery
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Handle new images array */}
+                                    {project.images && project.images.length > 0 ? (
+                                        project.images.map((img: string, idx: number) => (
+                                            <div key={idx} className="rounded-xl overflow-hidden border border-gray-800 shadow-2xl hover:scale-105 transition-transform">
+                                                <img src={getImageUrl(img)} alt={`${project.title} - ${idx + 1}`} className="w-full h-auto object-cover" />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        /* Backward compatibility with old 'image' field */
+                                        project.image && (
+                                            <div className="md:col-span-2 rounded-xl overflow-hidden border border-gray-800 shadow-2xl">
+                                                <img src={getImageUrl(project.image)} alt={project.title} className="w-full h-auto object-cover" />
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-6">

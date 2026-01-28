@@ -11,7 +11,7 @@ import IntegrationSettings from '@/components/profile/IntegrationSettings';
 export default function SettingsPage() {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
-    const [isSyncing, setIsSyncing] = useState(false);
+
     const [isEditing, setIsEditing] = useState(false);
 
     // Protect the route
@@ -21,22 +21,10 @@ export default function SettingsPage() {
         }
     }, [loading, user, router]);
 
-    const handleSyncStats = async () => {
-        setIsSyncing(true);
-        try {
-            await api.post('/users/sync-stats', {});
-            alert('Stats synced successfully!');
-            window.location.reload(); 
-        } catch (error) {
-            console.error('Failed to sync stats', error);
-            alert('Failed to sync stats. Check console.');
-        } finally {
-            setIsSyncing(false);
-        }
-    };
+
 
     const handleUpdateProfile = () => {
-         window.location.reload();
+        window.location.reload();
     };
 
     if (loading) {
@@ -60,12 +48,12 @@ export default function SettingsPage() {
             <IntegrationSettings user={user} onUpdate={handleUpdateProfile} />
 
             <div className="space-y-6">
-                
+
                 {/* Profile Settings */}
                 <section className="bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden">
                     <div className="p-4 border-b border-[hsl(var(--ide-border))] bg-black/20">
                         <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                            <ShieldCheck size={18} className="text-cyan-400"/> Profile & Account
+                            <ShieldCheck size={18} className="text-cyan-400" /> Profile & Account
                         </h2>
                     </div>
                     <div className="p-4 space-y-4">
@@ -82,23 +70,13 @@ export default function SettingsPage() {
                             <span className="text-gray-500 text-sm">Target: {user.username}</span>
                         </div>
 
-                        <div className="flex items-center justify-between p-3 hover:bg-white/5 rounded transition-colors cursor-pointer" onClick={handleSyncStats}>
-                            <div className="flex items-center gap-4">
-                                <div className="p-2 bg-green-900/30 rounded text-green-400">
-                                    {isSyncing ? <Loader2 className="animate-spin" size={20} /> : <RefreshCw size={20} />}
-                                </div>
-                                <div>
-                                    <h3 className="text-white font-medium">Sync External Stats</h3>
-                                    <p className="text-sm text-gray-400">Refresh data from GitHub and LeetCode.</p>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </section>
 
                 {/* Danger Zone */}
                 <section className="bg-[hsl(var(--ide-sidebar))] border border-red-900/30 rounded-lg overflow-hidden">
-                     <div className="p-4 border-b border-red-900/30 bg-red-900/10">
+                    <div className="p-4 border-b border-red-900/30 bg-red-900/10">
                         <h2 className="text-lg font-bold text-red-400 flex items-center gap-2">
                             Danger Zone
                         </h2>
@@ -120,10 +98,10 @@ export default function SettingsPage() {
             </div>
 
             {isEditing && (
-                <EditProfileModal 
-                    user={user} 
-                    onClose={() => setIsEditing(false)} 
-                    onUpdate={handleUpdateProfile} 
+                <EditProfileModal
+                    user={user}
+                    onClose={() => setIsEditing(false)}
+                    onUpdate={handleUpdateProfile}
                 />
             )}
         </div>

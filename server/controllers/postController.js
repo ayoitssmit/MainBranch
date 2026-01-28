@@ -43,6 +43,29 @@ const createPost = async (req, res) => {
 
 
         const savedPost = await newPost.save();
+
+        // Check for mentions and create notifications
+        const mentionRegex = /@(\w+)/g;
+        const mentionedUsernames = [...new Set((content.match(mentionRegex) || []).map(m => m.slice(1)))]; // Extract usernames and remove duplicates
+
+        if (mentionedUsernames.length > 0) {
+            const mentionedUsers = await User.find({ username: { $in: mentionedUsernames } });
+
+            const notifications = mentionedUsers
+                .filter(user => user._id.toString() !== req.user._id.toString()) // Don't notify self
+                .map(user => ({
+                    recipient: user._id,
+                    sender: req.user._id,
+                    type: 'mention',
+                    post: savedPost._id,
+                    read: false
+                }));
+
+            if (notifications.length > 0) {
+                await Notification.insertMany(notifications);
+            }
+        }
+
         res.status(201).json(savedPost);
     } catch (error) {
         console.error('CRITICAL CREATE POST ERROR:', error);
@@ -339,6 +362,21 @@ const getFollowingPosts = async (req, res) => {
     }
 };
 
+// @desc    Get posts liked by user
+// @route   GET /api/posts/liked
+// @access  Private
+const getLikedPosts = async (req, res) => {
+    try {
+        const posts = await Post.find({ likes: req.user._id, isPublished: true })
+            .populate('author', 'displayName username avatarUrl')
+            .sort({ createdAt: -1 });
+        res.json(posts);
+    } catch (error) {
+        console.error('Get Liked Posts Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 module.exports = {
     createPost,
     getAllPosts,
@@ -350,5 +388,6 @@ module.exports = {
     deletePost,
     deleteComment,
     getPostsByAuthor,
-    getFollowingPosts
+    getFollowingPosts,
+    getLikedPosts
 };

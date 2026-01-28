@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { 
-    syncUserStats, 
-    updateUserProfile, 
-    getProjectById, 
-    searchUsers, 
-    followUser, 
+const {
+    syncUserStats,
+    updateUserProfile,
+    getProjectById,
+    searchUsers,
+    followUser,
     unfollowUser,
     acceptFollowRequest,
     rejectFollowRequest,
@@ -15,7 +15,10 @@ const {
     getUserHeatmap,
     addPinnedItem,
     removePinnedItem,
-    addProject
+    addProject,
+    deleteProject,
+    toggleBookmark,
+    getBookmarkedPosts
 } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -23,15 +26,20 @@ const { protect } = require('../middleware/authMiddleware');
 router.get('/:userId/projects/:projectId', getProjectById);
 
 // Social & Search
-router.get('/search', searchUsers); 
+router.get('/search', searchUsers);
 router.put('/:id/follow', protect, followUser);
 router.put('/:id/unfollow', protect, unfollowUser); // Functions as cancel if request
 router.put('/:id/accept', protect, acceptFollowRequest);
 router.put('/:id/reject', protect, rejectFollowRequest);
 
+// Bookmarks
+router.put('/bookmark/:postId', protect, toggleBookmark);
+router.get('/bookmarks/all', protect, getBookmarkedPosts);
+
 router.post('/sync-stats', protect, syncUserStats);
 router.put('/profile', protect, updateUserProfile);
 router.post('/profile/projects', protect, addProject);
+router.delete('/profile/projects/:projectId', protect, deleteProject);
 router.post('/profile/pin', protect, addPinnedItem);
 router.delete('/profile/pin/:index', protect, removePinnedItem);
 

@@ -153,7 +153,7 @@ const updateUserProfile = async (req, res) => {
 // @access  Private
 const addProject = async (req, res) => {
     try {
-        const { title, description, link, tags, image } = req.body;
+        const { title, description, link, tags, images } = req.body;
 
         if (!title || !description) {
             return res.status(400).json({ message: 'Title and Description are required' });
@@ -164,7 +164,7 @@ const addProject = async (req, res) => {
             description,
             link: link || '',
             tags: tags || [],
-            image: image || null
+            images: images || []
         };
 
         const user = await User.findByIdAndUpdate(
@@ -183,6 +183,36 @@ const addProject = async (req, res) => {
         res.status(500).json({ message: 'Server error while adding project' });
     }
 };
+
+// @desc    Delete a project
+// @route   DELETE /api/users/profile/projects/:projectId
+// @access  Private
+const deleteProject = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Find the project to ensure it exists and belongs to the user
+        const project = user.projects.id(projectId);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Remove the project
+        user.projects.pull(projectId);
+        await user.save();
+
+        res.json({ message: 'Project deleted successfully' });
+    } catch (error) {
+        console.error('Delete Project Error:', error);
+        res.status(500).json({ message: 'Server error while deleting project' });
+    }
+};
+
 
 // @desc    Get project by ID
 // @route   GET /api/users/:userId/projects/:projectId
@@ -497,8 +527,8 @@ const addPinnedItem = async (req, res) => {
         if (!user.developerProfile) user.developerProfile = {};
         if (!user.developerProfile.pinnedItems) user.developerProfile.pinnedItems = [];
 
-        if (user.developerProfile.pinnedItems.length >= 6) {
-            return res.status(400).json({ message: 'Maximum 6 pinned items allowed' });
+        if (user.developerProfile.pinnedItems.length >= 3) {
+            return res.status(400).json({ message: 'Maximum 3 pinned items allowed' });
         }
 
         // Add new pinned item
@@ -543,6 +573,47 @@ const removePinnedItem = async (req, res) => {
     }
 };
 
+// Toggle Bookmark
+const toggleBookmark = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const user = await User.findById(req.user._id);
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const isBookmarked = user.bookmarks.includes(postId);
+        if (isBookmarked) {
+            await user.updateOne({ $pull: { bookmarks: postId } });
+            res.json({ message: 'Post removed from bookmarks', bookmarked: false });
+        } else {
+            await user.updateOne({ $push: { bookmarks: postId } });
+            res.json({ message: 'Post bookmarked', bookmarked: true });
+        }
+    } catch (error) {
+        console.error('Bookmark Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get Bookmarked Posts
+const getBookmarkedPosts = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate({
+            path: 'bookmarks',
+            populate: { path: 'author', select: 'displayName username avatarUrl headline' }
+        });
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Filter out nulls (deleted posts) and reverse to show most recent first
+        const validBookmarks = user.bookmarks.filter(post => post !== null).reverse();
+        res.json(validBookmarks);
+    } catch (error) {
+        console.error('Get Bookmarks Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 module.exports = {
     syncUserStats,
     updateUserProfile,
@@ -557,5 +628,8 @@ module.exports = {
     getUserHeatmap,
     addPinnedItem,
     removePinnedItem,
-    addProject
+    addProject,
+    deleteProject,
+    toggleBookmark,
+    getBookmarkedPosts
 };

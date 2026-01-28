@@ -78,7 +78,7 @@ export default function PinnedShowcase({ pinnedItems = [], isOwnProfile = false,
         <div className={cardClass}>
             <div className={headerClass}>
                 <h3 className={titleClass}>Pinned Showcase</h3>
-                {isOwnProfile && pinnedItems.length < 6 && (
+                {isOwnProfile && pinnedItems.length < 3 && (
                     <button
                         onClick={() => setShowAddModal(true)}
                         className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-sm font-medium transition-colors"
@@ -147,7 +147,7 @@ export default function PinnedShowcase({ pinnedItems = [], isOwnProfile = false,
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 shadow-xl">
                         <h3 className="text-xl font-bold text-foreground mb-4">Pin an Item</h3>
-                        
+
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm text-muted-foreground mb-1.5">Type</label>

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState, useRef } from 'react';
 import api from '@/lib/api';
 import { useSocket } from '@/context/SocketContext';
@@ -75,7 +77,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
             // Create preview URL
             const url = URL.createObjectURL(file);
             setPreviewUrl(url);
-            setMessageInput(prev => `${prev} [Image Selected] `);
+            // setMessageInput(prev => `${prev} [Image Selected] `); // Removed to keep input clean
         }
     };
 
@@ -212,6 +214,26 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
         }
     };
 
+    const renderContentWithLinks = (text: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.split(urlRegex).map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={index}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-400 hover:underline break-all"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    };
+
     return (
         <div className="flex flex-col h-full bg-[hsl(var(--ide-bg))] relative overflow-hidden">
 
@@ -310,7 +332,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
 
                                         {msg.image && (
                                             <div className="mb-2 cursor-pointer" onClick={() => setExpandedImage(`${BASE_URL}${msg.image}`)}>
-                                                <img src={`${BASE_URL}${msg.image}`} alt="Attachment" className="rounded-lg max-w-full h-auto" />
+                                                <img src={`${BASE_URL}${msg.image}`} alt="Attachment" className="rounded-lg w-72 h-48 object-cover border border-gray-700/50" />
                                             </div>
                                         )}
 
@@ -325,7 +347,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
                                                 ? 'bg-cyan-900/20 border-cyan-500/30 text-cyan-50 rounded-2xl rounded-tr-sm'
                                                 : 'bg-gray-800/40 border-gray-700/50 text-gray-200 rounded-2xl rounded-tl-sm'
                                                 } transition-all hover:scale-[1.01]`}>
-                                                <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                                                <p className="leading-relaxed whitespace-pre-wrap">{renderContentWithLinks(msg.content)}</p>
                                             </div>
                                         )}
 
@@ -383,7 +405,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
                     </div>
                 )}
 
-                <form onSubmit={handleSendMessage} className="relative flex items-end gap-2 bg-black/40 border border-gray-700/50 rounded-xl p-2 focus-within:border-cyan-500/50 focus-within:ring-1 focus-within:ring-cyan-500/20 transition-all">
+                <form onSubmit={handleSendMessage} className="relative flex items-end gap-2 bg-black/40 border border-gray-700/50 rounded-xl p-2 transition-all">
 
                     {/* Emoji Picker Popup */}
                     {showEmojiPicker && (
@@ -419,7 +441,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
                         placeholder="Type a message..."
-                        className="flex-1 bg-transparent border-0 focus:ring-0 text-white placeholder-gray-500 text-sm font-mono"
+                        className="flex-1 bg-transparent border-0 focus:ring-0 outline-none text-white placeholder-gray-500 text-sm font-mono"
                     />
 
                     {/* Emoji */}

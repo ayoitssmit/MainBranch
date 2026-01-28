@@ -9,13 +9,13 @@ import ImageUpload from '@/components/shared/ImageUpload';
 export default function AddProjectPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    
+
     // State
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [link, setLink] = useState('');
     const [tags, setTags] = useState('');
-    const [image, setImage] = useState('');
+    const [images, setImages] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,7 +27,7 @@ export default function AddProjectPage() {
                 description,
                 link,
                 tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-                image: image || null
+                images: images
             };
 
             await api.post('/users/profile/projects', newProject);
@@ -39,6 +39,12 @@ export default function AddProjectPage() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const getImageUrl = (path: string) => {
+        if (!path) return '';
+        if (path.startsWith('http')) return path;
+        return `http://localhost:5000${path}`;
     };
 
     return (
@@ -54,14 +60,14 @@ export default function AddProjectPage() {
                     </h1>
                     <p className="text-gray-400 mt-1">Showcase your best work to the community.</p>
                 </header>
-                
+
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">Project Title *</label>
                         <div className="relative">
                             <Type className="absolute left-3 top-2.5 text-gray-500" size={18} />
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 required
                                 className="w-full bg-black/30 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                 placeholder="e.g. AI Content Generator"
@@ -71,14 +77,58 @@ export default function AddProjectPage() {
                         </div>
                     </div>
 
+
                     <div>
-                         <label className="block text-sm font-medium text-gray-300 mb-2">Project Cover Image</label>
-                         <ImageUpload value={image} onChange={setImage} placeholder="Upload Project Cover" />
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Project Images (Max 5)
+                        </label>
+                        <div className="space-y-3">
+                            {/* Image Previews */}
+                            {images.length > 0 && (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {images.map((img, idx) => (
+                                        <div key={idx} className="relative group">
+                                            <img
+                                                src={getImageUrl(img)}
+                                                alt={`Preview ${idx + 1}`}
+                                                className="w-full h-32 object-cover rounded-lg border border-gray-700"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setImages(images.filter((_, i) => i !== idx))}
+                                                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Add Image Button */}
+                            {images.length < 5 && (
+                                <ImageUpload
+                                    value=""
+                                    onChange={(newImage) => {
+                                        if (newImage && images.length < 5) {
+                                            setImages([...images, newImage]);
+                                        }
+                                    }}
+                                    placeholder={images.length === 0 ? "Upload Project Images" : "Add Another Image"}
+                                />
+                            )}
+
+                            <p className="text-xs text-gray-500">
+                                {images.length}/5 images added
+                            </p>
+                        </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
-                        <textarea 
+                        <textarea
                             required
                             className="w-full bg-black/30 border border-gray-700 rounded-lg p-4 text-white focus:outline-none focus:border-cyan-500 transition-colors min-h-[120px]"
                             placeholder="Describe what your project does, the tech stack used, and any challenges you overcame..."
@@ -92,13 +142,13 @@ export default function AddProjectPage() {
                             <label className="block text-sm font-medium text-gray-300 mb-2">Project Link</label>
                             <div className="relative">
                                 <LinkIcon className="absolute left-3 top-2.5 text-gray-500" size={18} />
-                                <input 
-                                    type="url" 
+                                <input
+                                    type="url"
                                     className="w-full bg-black/30 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                     placeholder="https://github.com/..."
                                     value={link}
                                     onChange={(e) => setLink(e.target.value)}
-                                    />
+                                />
                             </div>
                         </div>
 
@@ -106,8 +156,8 @@ export default function AddProjectPage() {
                             <label className="block text-sm font-medium text-gray-300 mb-2">Technologies</label>
                             <div className="relative">
                                 <Code2 className="absolute left-3 top-2.5 text-gray-500" size={18} />
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     className="w-full bg-black/30 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                     placeholder="React, Node.js, Python..."
                                     value={tags}
@@ -119,14 +169,14 @@ export default function AddProjectPage() {
                     </div>
 
                     <div className="pt-6 flex justify-end gap-3 border-t border-[hsl(var(--ide-border))]">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={() => router.back()}
                             className="px-6 py-2.5 text-gray-400 hover:text-white transition-colors"
                         >
                             Cancel
                         </button>
-                        <button 
+                        <button
                             type="submit"
                             disabled={isLoading}
                             className="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 disabled:opacity-50 transition-all shadow-lg shadow-cyan-900/20"

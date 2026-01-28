@@ -68,6 +68,7 @@ export interface User {
     followers?: User[];
     following?: User[];
     followRequests?: User[];
+    bookmarks?: string[];
 
     // Integrations
     integrations?: {

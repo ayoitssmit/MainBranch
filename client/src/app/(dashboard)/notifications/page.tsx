@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Bell, Heart, MessageSquare, Reply, UserPlus, UserCheck } from 'lucide-react';
+import { Loader2, Bell, Heart, MessageSquare, Reply, UserPlus, UserCheck, AtSign } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 
@@ -105,7 +105,7 @@ export default function NotificationsPage() {
             </div>
 
             {/* Follow Requests Section */}
-            {((user?.followRequests?.length > 0) || (recentlyAccepted.length > 0)) && (
+            {(((user?.followRequests?.length || 0) > 0) || (recentlyAccepted.length > 0)) && (
                 <div className="mb-8">
                     <h2 className="text-lg font-bold text-[hsl(var(--foreground))] mb-3">Follow Requests</h2>
                     <div className="space-y-3">
@@ -225,6 +225,7 @@ export default function NotificationsPage() {
                                 {notification.type === 'reply' && <Reply size={20} className="text-cyan-500" />}
                                 {notification.type === 'follow_request' && <UserPlus size={20} className="text-blue-500" />}
                                 {notification.type === 'follow_accept' && <UserCheck size={20} className="text-green-500" />}
+                                {notification.type === 'mention' && <AtSign size={20} className="text-purple-500" />}
                             </div>
 
                             <div className="flex-1">
@@ -239,6 +240,7 @@ export default function NotificationsPage() {
                                             {notification.type === 'reply' && 'replied to your comment'}
                                             {notification.type === 'follow_request' && 'requested to follow you'}
                                             {notification.type === 'follow_accept' && 'request accepted'}
+                                            {notification.type === 'mention' && 'mentioned you in a post'}
                                         </span>
                                     </div>
                                     <span className="text-[10px] text-gray-500 whitespace-nowrap ml-2">

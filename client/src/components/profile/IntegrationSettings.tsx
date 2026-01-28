@@ -142,7 +142,7 @@ export default function IntegrationSettings({ user, onUpdate }: IntegrationSetti
                                                 type="password"
                                                 placeholder={
                                                     p.id === 'kaggle'
-                                                        ? 'API Key (Optional)'
+                                                        ? 'API Key (Mandatory)'
                                                         : 'Access Token (Optional)'
                                                 }
                                                 className="w-full bg-activity border border-input rounded-md px-3 py-2 text-sm"
@@ -160,6 +160,11 @@ export default function IntegrationSettings({ user, onUpdate }: IntegrationSetti
                                                 }
                                             />
                                         )}
+                                    {p.id === 'github' && (
+                                        <p className="text-[11px] text-amber-500/80 col-span-1 md:col-span-2 text-right">
+                                            * If using a token, remember to generate a new one every 30 days and update it.
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-1">

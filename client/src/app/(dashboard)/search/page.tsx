@@ -113,7 +113,6 @@ export default function SearchPage() {
                             <div className="shrink-0">
                                 <FollowButton
                                     targetUserId={resUser._id}
-                                    targetUserId={resUser._id}
                                     initialIsFollowing={user?.following?.some((u: any) => u._id === resUser._id) || false}
                                     initialIsRequested={!!(user && user.followRequests?.some((u: any) => u._id === resUser._id))}
                                 />

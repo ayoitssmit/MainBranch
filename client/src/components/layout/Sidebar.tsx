@@ -78,10 +78,8 @@ export function Sidebar() {
         };
 
         const handleReceiveMessage = (data: any) => {
-            // Increment unread count if we are not on that chat
-            // For simplicity, we just refetch or increment. 
-            // Ideally we check if we are currently viewing that chat.
-            setMessageUnreadCount(prev => prev + 1);
+            // Refetch unread count to ensure we count unique senders, not total messages
+            api.get('/chat/unread-count').then(res => setMessageUnreadCount(res.data.count));
         };
 
         const handleUnreadUpdate = () => {

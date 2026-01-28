@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import api, { BASE_URL } from '@/lib/api';
 import Link from 'next/link';
-import { MessageSquare, ThumbsUp, Send, Globe, MoreHorizontal, Loader2, Trash2, Clock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MessageSquare, ThumbsUp, Send, Globe, Loader2, Trash2, Clock, Check, Bookmark } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 import ShareModal from './ShareModal';
@@ -49,6 +50,7 @@ interface PostCardProps {
 
 export default function PostCard({ post: initialPost, onPostDeleted }: PostCardProps) {
   const { user } = useAuth();
+  const router = useRouter();
   const [post, setPost] = useState(initialPost);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -61,11 +63,62 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
   const [showShareModal, setShowShareModal] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const [isContentExpanded, setIsContentExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}/post/${post.slug || post._id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   // Content truncation limit
   const MAX_CONTENT_LENGTH = 180;
   const shouldTruncate = post.content.length > MAX_CONTENT_LENGTH;
   const displayContent = isContentExpanded ? post.content : (shouldTruncate ? post.content.slice(0, MAX_CONTENT_LENGTH) + '...' : post.content);
+
+  // Helper function to parse mentions
+  const renderContentWithMentions = (text: string) => {
+    const mentionRegex = /@(\w+)/g;
+    const matches = text.match(mentionRegex);
+
+    if (!matches) return text;
+
+    const parts: (string | React.ReactNode)[] = [];
+    let lastIndex = 0;
+    let match;
+    const regex = /@(\w+)/g;
+
+    while ((match = regex.exec(text)) !== null) {
+      // Push text before
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+
+      // Push link
+      const username = match[1];
+      parts.push(
+        <Link
+          key={`${match.index}-${username}`}
+          href={`/profile/${username}`}
+          onClick={(e) => e.stopPropagation()}
+          className="text-cyan-400 hover:underline font-medium"
+        >
+          @{username}
+        </Link>
+      );
+
+      lastIndex = regex.lastIndex;
+    }
+
+    // Push remaining text
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+
+    return parts;
+  };
 
   useEffect(() => {
     if (comments.length) {
@@ -76,10 +129,6 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
   const buildCommentTree = (flatComments: Comment[]) => {
     const map: Record<string, Comment> = {};
     const roots: Comment[] = [];
-    // Deep clone to avoid mutating state directly during re-renders if causing issues, 
-    // but here we are building a new tree view. 
-    // Warning: Mutating objects in 'map' that refer to 'flatComments' elements might be mutating state if 'flatComments' is state.
-    // Better to map to new objects.
     const commentsCopy = flatComments.map(c => ({ ...c, children: [] }));
 
     commentsCopy.forEach((c) => {
@@ -307,6 +356,23 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
 
   const isLiked = user && post.likes?.includes(user._id);
   const canDeletePost = user && post.author && post.author._id?.toString() === user._id.toString();
+  const [isBookmarked, setIsBookmarked] = useState(user?.bookmarks?.includes(post._id) || false);
+
+  useEffect(() => {
+    setIsBookmarked(user?.bookmarks?.includes(post._id) || false);
+  }, [user, post._id]);
+
+  const handleBookmark = async () => {
+    if (!user) return;
+    const oldState = isBookmarked;
+    setIsBookmarked(!isBookmarked);
+    try {
+      await api.put(`/users/bookmark/${post._id}`, {});
+    } catch (error) {
+      console.error(error);
+      setIsBookmarked(oldState);
+    }
+  };
 
   return (
     <article className="group bg-[hsl(var(--ide-bg))]/40 backdrop-blur-sm border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden mb-4 hover:border-gray-600 transition-all duration-300 relative">
@@ -348,8 +414,11 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
                   <Trash2 size={16} />
                 </button>
               )}
-              <button className="text-gray-600 hover:text-gray-300 transition-colors">
-                <MoreHorizontal size={18} />
+              <button
+                onClick={handleBookmark}
+                className={`transition-colors ${isBookmarked ? 'text-[hsl(var(--primary))] fill-[hsl(var(--primary))]' : 'text-gray-600 hover:text-gray-300'}`}
+              >
+                <Bookmark size={18} className={isBookmarked ? 'fill-current' : ''} />
               </button>
             </div>
           </div>
@@ -358,15 +427,15 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
 
       {/* Content */}
       <div className="px-4 pb-3">
-        <Link
-          href={`/post/${post.slug || post._id}`}
-          className={`block text-sm text-gray-300 whitespace-pre-wrap leading-relaxed hover:text-gray-200 transition-colors mb-1 block relative ${!isContentExpanded && shouldTruncate ? 'max-h-[6em] overflow-hidden' : ''}`}
+        <div
+          onClick={() => router.push(`/post/${post.slug || post._id}`)}
+          className={`block text-sm text-gray-300 whitespace-pre-wrap leading-relaxed hover:text-gray-200 transition-colors mb-1 block relative cursor-pointer ${!isContentExpanded && shouldTruncate ? 'max-h-[6em] overflow-hidden' : ''}`}
         >
-          {post.content}
+          {renderContentWithMentions(displayContent)}
           {!isContentExpanded && shouldTruncate && (
             <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
           )}
-        </Link>
+        </div>
         {shouldTruncate && (
           <button
             onClick={(e) => {
@@ -422,8 +491,11 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
         >
           <Send size={16} />
         </button>
-        <button className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white">
-          <Globe size={16} />
+        <button
+          onClick={handleCopyLink}
+          className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white"
+        >
+          {copied ? <Check size={16} className="text-green-500" /> : <Globe size={16} />}
         </button>
       </div>
 

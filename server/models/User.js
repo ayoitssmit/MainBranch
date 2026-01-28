@@ -136,7 +136,15 @@ const UserSchema = new mongoose.Schema({
         description: String,
         link: String,
         tags: [String],
-        image: String
+        images: {
+            type: [String],
+            validate: {
+                validator: function (arr) {
+                    return arr.length <= 5;
+                },
+                message: 'Maximum 5 images allowed per project'
+            }
+        }
     }, { timestamps: true })],
     certificates: [{
         name: { type: String, required: true },
@@ -146,7 +154,8 @@ const UserSchema = new mongoose.Schema({
     }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    followRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    followRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
 }, { timestamps: true });
 
 UserSchema.pre('save', async function () {

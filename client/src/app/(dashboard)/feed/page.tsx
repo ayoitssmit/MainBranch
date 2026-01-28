@@ -32,7 +32,7 @@ export default function FeedPage() {
   const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'discover' | 'following' | 'my_posts'>('discover');
+  const [activeTab, setActiveTab] = useState<'discover' | 'following' | 'my_posts' | 'bookmarks' | 'liked'>('discover');
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
 
@@ -43,6 +43,8 @@ export default function FeedPage() {
         let endpoint = '/posts';
         if (activeTab === 'following') endpoint = '/posts/following';
         else if (activeTab === 'my_posts' && user) endpoint = `/posts/user/${user._id}`;
+        else if (activeTab === 'bookmarks') endpoint = '/users/bookmarks/all';
+        else if (activeTab === 'liked') endpoint = '/posts/liked';
 
         const response = await api.get(endpoint);
         setPosts(response.data);
@@ -119,6 +121,20 @@ export default function FeedPage() {
             >
               My Posts
               {activeTab === 'my_posts' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[hsl(var(--primary))]" />}
+            </button>
+            <button
+              onClick={() => setActiveTab('bookmarks')}
+              className={`pb-2 px-1 text-sm font-bold transition-colors relative ${activeTab === 'bookmarks' ? 'text-[hsl(var(--foreground))]' : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'}`}
+            >
+              Bookmarks
+              {activeTab === 'bookmarks' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[hsl(var(--primary))]" />}
+            </button>
+            <button
+              onClick={() => setActiveTab('liked')}
+              className={`pb-2 px-1 text-sm font-bold transition-colors relative ${activeTab === 'liked' ? 'text-[hsl(var(--foreground))]' : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'}`}
+            >
+              Liked
+              {activeTab === 'liked' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[hsl(var(--primary))]" />}
             </button>
           </div>
 

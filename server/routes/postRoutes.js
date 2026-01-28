@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { createPost, getAllPosts, getPostBySlug, likePost, createComment, getPostComments, voteComment, deletePost, deleteComment, getPostsByAuthor, getFollowingPosts } = require('../controllers/postController');
+const { createPost, getAllPosts, getPostBySlug, likePost, createComment, getPostComments, voteComment, deletePost, deleteComment, getPostsByAuthor, getFollowingPosts, getLikedPosts } = require('../controllers/postController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Multer Config
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ 
+const upload = multer({
     storage,
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png|gif|webp/;
@@ -32,6 +32,7 @@ const upload = multer({
 // Post routes
 router.get('/', getAllPosts);
 router.get('/following', protect, getFollowingPosts);
+router.get('/liked', protect, getLikedPosts);
 router.post('/', protect, upload.single('image'), createPost);
 router.get('/:slug', getPostBySlug);
 router.get('/user/:userId', getPostsByAuthor);
