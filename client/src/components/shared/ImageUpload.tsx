@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { BASE_URL } from '@/lib/api';
 import api from '@/lib/api';
 
 interface ImageUploadProps {
@@ -71,7 +72,7 @@ export default function ImageUpload({ value, onChange, placeholder = "Upload Ima
         if (!path) return '';
         if (path.startsWith('http')) return path;
         // Fallback for local dev
-        return `http://localhost:5000${path}`; 
+        return `${BASE_URL}${path}`; 
     };
 
     return (

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Github, Code, Database, Smile, RefreshCw, BarChart2 } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
+import { SiGithub, SiLeetcode, SiHuggingface } from 'react-icons/si';
+import { FaKaggle } from 'react-icons/fa';
 import LeetCodeStatsCard from './LeetCodeStatsCard';
 
 interface StatsOverviewProps {
@@ -35,7 +37,7 @@ export default function StatsOverview({ user }: StatsOverviewProps) {
         <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {/* GitHub Stats */}
-                <StatCard title="GitHub" icon={Github} color="gray" connected={!!integrations.github?.username}>
+                <StatCard title="GitHub" icon={SiGithub} color="gray" connected={!!integrations.github?.username}>
                     {stats.github ? (
                         <div className="space-y-4">
                             <div className="flex flex-col gap-3">
@@ -61,7 +63,7 @@ export default function StatsOverview({ user }: StatsOverviewProps) {
                 </StatCard>
 
                 {/* LeetCode Stats */}
-                <StatCard title="LeetCode" icon={Code} color="yellow" connected={!!integrations.leetcode?.username}>
+                <StatCard title="LeetCode" icon={SiLeetcode} color="yellow" connected={!!integrations.leetcode?.username}>
                     {stats.leetcode ? (
                         <LeetCodeStatsCard stats={stats.leetcode} username={integrations.leetcode?.username || ''} />
                     ) : (integrations.leetcode?.username ? (
@@ -72,7 +74,7 @@ export default function StatsOverview({ user }: StatsOverviewProps) {
                 </StatCard>
 
                 {/* Kaggle Stats */}
-                <StatCard title="Kaggle" icon={Database} color="cyan" connected={!!integrations.kaggle?.username}>
+                <StatCard title="Kaggle" icon={FaKaggle} color="cyan" connected={!!integrations.kaggle?.username}>
                     {stats.kaggle ? (
                         <div className="space-y-4">
                             <div className="flex flex-col gap-3">
@@ -98,7 +100,7 @@ export default function StatsOverview({ user }: StatsOverviewProps) {
                 </StatCard>
 
                 {/* Hugging Face Stats */}
-                <StatCard title="Hugging Face" icon={Smile} color="amber" connected={!!integrations.huggingface?.username}>
+                <StatCard title="Hugging Face" icon={SiHuggingface} color="amber" connected={!!integrations.huggingface?.username}>
                     {stats.huggingface ? (
                         <div className="space-y-4">
                             <div className="flex flex-col gap-3">

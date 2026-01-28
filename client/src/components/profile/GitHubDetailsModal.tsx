@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, ExternalLink, Github, ArrowLeft } from 'lucide-react';
+import { X, ExternalLink, ArrowLeft } from 'lucide-react';
+import { SiGithub } from 'react-icons/si';
 import UserListModal from '@/components/profile/UserListModal';
 import axios from 'axios';
 
@@ -70,7 +71,7 @@ export default function GitHubDetailsModal({ isOpen, onClose, user }: GitHubDeta
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))/20]">
                         <div className="flex items-center gap-2">
-                            <Github size={20} className="text-[hsl(var(--foreground))]" />
+                            <SiGithub size={20} className="text-[hsl(var(--foreground))]" />
                             <span className="font-semibold text-foreground">GitHub Details</span>
                         </div>
                         <button onClick={handleClose} className="p-1 hover:bg-[hsl(var(--secondary))] rounded transition-colors text-muted-foreground hover:text-foreground">

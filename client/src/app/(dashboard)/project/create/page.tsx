@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import api from '@/lib/api';
+import api, { BASE_URL } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Link as LinkIcon, Code2, Type } from 'lucide-react';
 import ImageUpload from '@/components/shared/ImageUpload';
@@ -44,7 +44,7 @@ export default function AddProjectPage() {
     const getImageUrl = (path: string) => {
         if (!path) return '';
         if (path.startsWith('http')) return path;
-        return `http://localhost:5000${path}`;
+        return `${BASE_URL}${path}`;
     };
 
     return (

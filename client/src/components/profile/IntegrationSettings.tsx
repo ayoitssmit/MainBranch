@@ -8,7 +8,12 @@ import {
     Check,
     Link as LinkIcon,
     RefreshCw,
+    CheckCircle2,
+    AlertCircle,
+    Loader2,
 } from 'lucide-react';
+import { SiGithub, SiLeetcode, SiHuggingface } from 'react-icons/si';
+import { FaKaggle } from 'react-icons/fa';
 
 interface IntegrationSettingsProps {
     user: any;
@@ -16,10 +21,10 @@ interface IntegrationSettingsProps {
 }
 
 const PLATFORMS = [
-    { id: 'github', label: 'GitHub', icon: Github, description: 'Sync commits, PRs, and stars.' },
-    { id: 'leetcode', label: 'LeetCode', icon: Code, description: 'Sync problems solved and contest rating.' },
-    { id: 'kaggle', label: 'Kaggle', icon: Database, description: 'Sync competitions, kernels, and datasets.' },
-    { id: 'huggingface', label: 'Hugging Face', icon: Terminal, description: 'Sync models, spaces, and likes.' },
+    { id: 'github', label: 'GitHub', icon: SiGithub, description: 'Sync commits, PRs, and stars.' },
+    { id: 'leetcode', label: 'LeetCode', icon: SiLeetcode, description: 'Sync problems solved and contest rating.' },
+    { id: 'kaggle', label: 'Kaggle', icon: FaKaggle, description: 'Sync competitions, kernels, and datasets.' },
+    { id: 'huggingface', label: 'Hugging Face', icon: SiHuggingface, description: 'Sync models, spaces, and likes.' },
 ];
 
 export default function IntegrationSettings({ user, onUpdate }: IntegrationSettingsProps) {

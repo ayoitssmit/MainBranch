@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { X, ExternalLink, Database } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
+import { FaKaggle } from 'react-icons/fa';
 
 interface KaggleDetailsModalProps {
     isOpen: boolean;
@@ -29,7 +30,7 @@ export default function KaggleDetailsModal({ isOpen, onClose, user }: KaggleDeta
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))/20]">
                     <div className="flex items-center gap-2">
-                        <Database size={20} className="text-[#20BEFF]" />
+                        <FaKaggle size={20} className="text-[#20BEFF]" />
                         <span className="font-semibold text-foreground">Kaggle Details</span>
                     </div>
                     <button onClick={onClose} className="p-1 hover:bg-[hsl(var(--secondary))] rounded transition-colors text-muted-foreground hover:text-foreground">

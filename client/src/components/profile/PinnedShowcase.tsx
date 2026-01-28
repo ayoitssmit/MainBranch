@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { ExternalLink, X, Plus, Github, Database, Terminal } from 'lucide-react';
+import { ExternalLink, X, Plus } from 'lucide-react';
+import { SiGithub, SiHuggingface } from 'react-icons/si';
+import { FaKaggle } from 'react-icons/fa';
 import api from '@/lib/api';
 
 interface PinnedItem {
@@ -29,10 +31,10 @@ export default function PinnedShowcase({ pinnedItems = [], isOwnProfile = false,
 
     const getPlatformIcon = (platform: string) => {
         switch (platform) {
-            case 'github': return Github;
-            case 'kaggle': return Database;
-            case 'huggingface': return Terminal;
-            default: return Github;
+            case 'github': return SiGithub;
+            case 'kaggle': return FaKaggle;
+            case 'huggingface': return SiHuggingface;
+            default: return SiGithub;
         }
     };
 

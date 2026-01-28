@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Mail, Calendar, ExternalLink, Github, Linkedin, Code, Award, Briefcase, Users, UserCheck } from 'lucide-react';
+import { Loader2, Mail, Calendar, ExternalLink, Code, Award, Briefcase, Users, UserCheck } from 'lucide-react';
+import { SiGithub, SiLinkedin } from 'react-icons/si';
 import { useRouter } from 'next/navigation';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 import TechStackDisplay from '@/components/profile/TechStackDisplay';
@@ -23,9 +24,9 @@ export default function ProfilePage() {
             const oneDay = 24 * 60 * 60 * 1000;
             // Sync if never synced or older than 24 hours
             if (!lastSync || (new Date().getTime() - lastSync.getTime() > oneDay)) {
-                console.log('Data stale, auto-syncing...');
+                // console.log('Data stale, auto-syncing...');
                 api.post('/users/sync-stats')
-                    .then(() => console.log('Auto-sync complete'))
+                    .then(() => {}) // Auto-sync complete
                     .catch(err => console.error('Auto-sync failed', err));
             }
         }
@@ -88,12 +89,12 @@ export default function ProfilePage() {
                         <div className="flex flex-wrap justify-center md:justify-start gap-3">
                             {user.socials?.github && (
                                 <a href={user.socials.github} target="_blank" className="p-2 bg-gray-800/50 hover:bg-gray-800 text-gray-300 hover:text-white rounded-md border border-gray-700 transition-colors">
-                                    <Github size={18} />
+                                    <SiGithub size={18} />
                                 </a>
                             )}
                             {user.socials?.linkedin && (
                                 <a href={user.socials.linkedin} target="_blank" className="p-2 bg-cyan-900/20 hover:bg-cyan-900/30 text-cyan-400 rounded-md border border-cyan-900/30 transition-colors">
-                                    <Linkedin size={18} />
+                                    <SiLinkedin size={18} />
                                 </a>
                             )}
                             <a href={`mailto:${user.email}`} className="p-2 bg-emerald-900/20 hover:bg-emerald-900/30 text-emerald-400 rounded-md border border-emerald-900/30 transition-colors">

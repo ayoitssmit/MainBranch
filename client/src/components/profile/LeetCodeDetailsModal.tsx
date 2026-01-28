@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { X, ExternalLink, Code } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
+import { SiLeetcode } from 'react-icons/si';
 
 interface LeetCodeDetailsModalProps {
     isOpen: boolean;
@@ -32,7 +33,7 @@ export default function LeetCodeDetailsModal({ isOpen, onClose, user }: LeetCode
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))/20]">
                     <div className="flex items-center gap-2">
-                        <Code size={20} className="text-[#ffc01e]" />
+                        <SiLeetcode size={20} className="text-[#ffc01e]" />
                         <span className="font-semibold text-foreground">LeetCode Details</span>
                     </div>
                     <button onClick={onClose} className="p-1 hover:bg-[hsl(var(--secondary))] rounded transition-colors text-muted-foreground hover:text-foreground">

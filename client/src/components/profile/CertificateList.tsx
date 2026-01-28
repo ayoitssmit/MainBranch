@@ -69,16 +69,12 @@ export default function CertificateList({ certificates, isOwner }: CertificateLi
                             </>
                         ) : (
                             <>
-                                <div className="w-24 h-24 mx-auto mb-6">
-                                    <svg viewBox="0 0 200 200" className="w-full h-full">
-                                        <circle cx="100" cy="100" r="80" fill="#78350F" opacity="0.2" />
-                                        <path d="M 100 50 L 120 90 L 165 95 L 130 125 L 140 170 L 100 145 L 60 170 L 70 125 L 35 95 L 80 90 Z" fill="#FCD34D" opacity="0.4" />
-                                        <text x="100" y="115" fontSize="50" textAnchor="middle" fill="#FCD34D">🏆</text>
-                                    </svg>
+                                <div className="w-16 h-16 bg-yellow-900/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-yellow-900/20">
+                                    <Award size={32} className="text-yellow-600/50" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">No badges unlocked yet! 🎯</h3>
+                                <h3 className="text-xl font-bold text-white mb-2">No certificates</h3>
                                 <p className="text-gray-400 max-w-md mx-auto">
-                                    Looks like this developer is still on their certification journey. Stay tuned!
+                                    This developer hasn't added any certifications yet.
                                 </p>
                             </>
                         )}

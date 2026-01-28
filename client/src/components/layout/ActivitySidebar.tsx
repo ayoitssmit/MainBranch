@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Github, Code, Database, Terminal } from 'lucide-react';
+
+import { SiGithub, SiLeetcode, SiHuggingface } from 'react-icons/si';
+import { FaKaggle } from 'react-icons/fa';
 import GitHubDetailsModal from '@/components/profile/GitHubDetailsModal';
 import LeetCodeDetailsModal from '@/components/profile/LeetCodeDetailsModal';
 import KaggleDetailsModal from '@/components/profile/KaggleDetailsModal';
@@ -38,7 +40,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                                 onClick={() => setShowGitHubDetails(true)}
                             >
                                 <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border group-hover:bg-primary/10">
-                                    <Github size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                    <SiGithub size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-xs font-medium text-foreground truncate">GitHub</div>
@@ -55,7 +57,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                     ) : (
                         <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border opacity-60">
                             <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border">
-                                <Github size={16} className="text-muted-foreground" />
+                                <SiGithub size={16} className="text-muted-foreground" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="text-xs font-medium text-foreground truncate">GitHub</div>
@@ -73,7 +75,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                                 onClick={() => setShowLeetCodeDetails(true)}
                             >
                                 <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border group-hover:bg-primary/10">
-                                    <Code size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                    <SiLeetcode size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-xs font-medium text-foreground truncate">LeetCode</div>
@@ -90,7 +92,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                     ) : (
                         <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border opacity-60">
                             <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border">
-                                <Code size={16} className="text-muted-foreground" />
+                                <SiLeetcode size={16} className="text-muted-foreground" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="text-xs font-medium text-foreground truncate">LeetCode</div>
@@ -108,7 +110,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                                 onClick={() => setShowKaggleDetails(true)}
                             >
                                 <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border group-hover:bg-primary/10">
-                                    <Database size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                    <FaKaggle size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-xs font-medium text-foreground truncate">Kaggle</div>
@@ -125,7 +127,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                     ) : (
                         <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border opacity-60">
                             <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border">
-                                <Database size={16} className="text-muted-foreground" />
+                                <FaKaggle size={16} className="text-muted-foreground" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="text-xs font-medium text-foreground truncate">Kaggle</div>
@@ -142,7 +144,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                                 onClick={() => setShowHuggingFaceDetails(true)}
                             >
                                 <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border group-hover:bg-primary/10">
-                                    <Terminal size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                    <SiHuggingface size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-xs font-medium text-foreground truncate">Hugging Face</div>
@@ -159,7 +161,7 @@ export default function ActivitySidebar({ user }: ActivitySidebarProps) {
                     ) : (
                         <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border opacity-60">
                             <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center border border-border">
-                                <Terminal size={16} className="text-muted-foreground" />
+                                <SiHuggingface size={16} className="text-muted-foreground" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="text-xs font-medium text-foreground truncate">Hugging Face</div>

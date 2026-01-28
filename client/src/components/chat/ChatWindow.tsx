@@ -1,7 +1,9 @@
 "use client";
 
+import Link from 'next/link';
+
 import React, { useEffect, useState, useRef } from 'react';
-import api from '@/lib/api';
+import api, { BASE_URL } from '@/lib/api';
 import { useSocket } from '@/context/SocketContext';
 import { useAuth } from '@/hooks/useAuth';
 import ImageModal from '../shared/ImageModal';
@@ -247,23 +249,25 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
                         <ArrowLeft size={20} />
                     </button>
 
-                    <div className="relative">
-                        <img
-                            src={recipient.avatarUrl || `https://ui-avatars.com/api/?name=${recipient.username}&background=0f172a&color=3b82f6`}
-                            className="w-10 h-10 rounded-lg object-cover bg-black border border-gray-700"
-                            alt={recipient.username}
-                        />
-                        <div className="absolute -bottom-1 -right-1 bg-black p-0.5 rounded-full">
-                            <span className="block w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+                    <Link href={`/profile/${recipient.username}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer">
+                        <div className="relative">
+                            <img
+                                src={recipient.avatarUrl || `https://ui-avatars.com/api/?name=${recipient.username}&background=0f172a&color=3b82f6`}
+                                className="w-10 h-10 rounded-lg object-cover bg-black border border-gray-700"
+                                alt={recipient.username}
+                            />
+                            <div className="absolute -bottom-1 -right-1 bg-black p-0.5 rounded-full">
+                                <span className="block w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <h3 className="text-sm font-bold text-white tracking-wide">{recipient.displayName || recipient.username}</h3>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] uppercase tracking-wider text-emerald-500 font-mono">● Secured Connect</span>
+                        <div>
+                            <h3 className="text-sm font-bold text-white tracking-wide">{recipient.displayName || recipient.username}</h3>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] uppercase tracking-wider text-emerald-500 font-mono">● Secured Connect</span>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
                 <button className="text-gray-500 hover:text-white transition-colors">
                     <MoreVertical size={20} />
@@ -290,9 +294,10 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
 
                     {messages.map((msg, index) => {
                         const isMe = msg.sender === user?._id;
-                        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                        // Use BASE_URL from api config
+                        const API_URL = BASE_URL;
                         const imageUrl = msg.image ? (msg.image.startsWith('http') ? msg.image : `${API_URL}${msg.image}`) : null;
-                        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                        const BASE_IMG_URL = BASE_URL;
 
                         // Grouping Logic - Previous (for top margin and timestamp)
                         const prevMsg = messages[index - 1];

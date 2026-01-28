@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Briefcase, ExternalLink, Plus } from 'lucide-react';
+import { Briefcase, ExternalLink, Plus, FolderOpen } from 'lucide-react';
 import { BASE_URL } from '@/lib/api';
 
 interface ProjectListProps {
@@ -97,18 +97,12 @@ export default function ProjectList({ projects, isOwner, userId }: ProjectListPr
                             </>
                         ) : (
                             <>
-                                <div className="w-24 h-24 mx-auto mb-6">
-                                    <svg viewBox="0 0 200 200" className="w-full h-full">
-                                        <circle cx="100" cy="100" r="80" fill="#374151" opacity="0.3" />
-                                        <path d="M 60 110 Q 100 130 140 110" stroke="#60A5FA" strokeWidth="4" fill="none" strokeLinecap="round" />
-                                        <circle cx="75" cy="80" r="8" fill="#60A5FA" />
-                                        <circle cx="125" cy="80" r="8" fill="#60A5FA" />
-                                        <text x="100" y="160" fontSize="40" textAnchor="middle" fill="#9CA3AF">📦</text>
-                                    </svg>
+                                <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
+                                    <FolderOpen size={32} className="text-gray-500" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Nothing to see here... yet! 🌵</h3>
+                                <h3 className="text-xl font-bold text-white mb-2">No public projects</h3>
                                 <p className="text-gray-400 max-w-md mx-auto">
-                                    This developer is probably too busy coding to update their portfolio. Check back later!
+                                    This developer hasn't showcased any projects yet.
                                 </p>
                             </>
                         )}

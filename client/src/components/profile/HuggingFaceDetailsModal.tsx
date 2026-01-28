@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { X, ExternalLink, Terminal } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
+import { SiHuggingface } from 'react-icons/si';
 
 interface HuggingFaceDetailsModalProps {
     isOpen: boolean;
@@ -29,7 +30,7 @@ export default function HuggingFaceDetailsModal({ isOpen, onClose, user }: Huggi
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))/20]">
                     <div className="flex items-center gap-2">
-                        <Terminal size={20} className="text-[#FFD21E]" />
+                        <SiHuggingface size={20} className="text-[#FFD21E]" />
                         <span className="font-semibold text-foreground">Hugging Face Details</span>
                     </div>
                     <button onClick={onClose} className="p-1 hover:bg-[hsl(var(--secondary))] rounded transition-colors text-muted-foreground hover:text-foreground">

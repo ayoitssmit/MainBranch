@@ -66,7 +66,7 @@ export function FollowButton({ targetUserId, initialIsFollowing, initialIsReques
         <button
             onClick={handleFollowToggle}
             disabled={loading}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 status !== 'none'
                 ? 'bg-[hsl(var(--secondary))] text-[hsl(var(--foreground))] border border-[hsl(var(--border))] hover:bg-red-900/20 hover:text-red-400 hover:border-red-900/30' 
                 : 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:opacity-90 shadow-md shadow-orange-900/20'

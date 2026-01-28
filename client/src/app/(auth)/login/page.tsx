@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Github, Code2, Terminal, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Code2, Terminal, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { SiGithub } from 'react-icons/si';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -20,7 +21,7 @@ export default function LoginPage() {
     const handleGithubLogin = () => {
         setIsLoading(true);
         const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
-        const REDIRECT_URI = 'http://localhost:3000/api/auth/callback';
+        const REDIRECT_URI = `${window.location.origin}/api/auth/callback`;
         window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
     };
 
@@ -70,7 +71,7 @@ export default function LoginPage() {
                         className="w-full bg-[#24292e] hover:bg-[#2f363d] text-white h-11 rounded-md flex items-center justify-center transition-all border border-gray-700 hover:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed group font-medium text-sm"
                     >
                         {isLoading && <Loader2 className="mr-2 animate-spin" size={16} />}
-                        {!isLoading && <Github className="mr-3 group-hover:scale-110 transition-transform" size={18} />}
+                        {!isLoading && <SiGithub className="mr-3 group-hover:scale-110 transition-transform" size={18} />}
                         Continue with GitHub
                     </button>
                     

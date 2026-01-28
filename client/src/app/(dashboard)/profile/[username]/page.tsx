@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import api, { BASE_URL } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Mail, Calendar, Github, Linkedin, Code, Award, Briefcase, Users, UserCheck, MessageCircle } from 'lucide-react';
+import { Loader2, Mail, Calendar, Linkedin, Code, Award, Briefcase, Users, UserCheck, MessageCircle, FileText, Settings } from 'lucide-react';
+import { SiGithub } from 'react-icons/si';
 import { useRouter, useParams } from 'next/navigation';
 import { FollowButton } from '@/components/shared/FollowButton';
 
@@ -156,15 +157,24 @@ export default function PublicProfilePage() {
                                         onClick={() => setActiveTab('posts')}
                                         className="px-4 py-2 bg-[hsl(var(--secondary))] text-white rounded-md border border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] transition-colors flex items-center gap-2 font-medium text-sm"
                                     >
-                                        <MessageCircle size={16} className="rotate-90" /> Posts
+                                        <FileText size={16} /> Posts
                                     </button>
                                 </>
+                            )}
+                            
+                            {isMe && (
+                                <button
+                                    onClick={() => router.push('/settings')}
+                                    className="px-4 py-2 bg-[hsl(var(--secondary))] text-white rounded-md border border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] transition-colors flex items-center gap-2 font-medium text-sm"
+                                >
+                                    <Settings size={16} /> Edit Profile
+                                </button>
                             )}
 
                             {/* Social Icons */}
                             {user.socials?.github && (
                                 <a href={user.socials.github} target="_blank" className="p-2 bg-gray-800/50 hover:bg-gray-800 text-gray-300 hover:text-white rounded-md border border-gray-700 transition-colors">
-                                    <Github size={18} />
+                                    <SiGithub size={18} />
                                 </a>
                             )}
                             {user.socials?.linkedin && (
