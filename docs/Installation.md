@@ -4,7 +4,7 @@
 
 *   **Node.js**: v18+
 *   **MongoDB**: Local instance or Atlas URI
-*   **Python**: v3.9+ (For ML Microservice)
+
 
 ## 1. Clone Repository
 
@@ -57,16 +57,3 @@ Run the client:
 npm run dev
 ```
 
-Visit `http://localhost:3000` to view the app.
-
-## 4. ML Service (Start Only if Needed)
-
-Navigate to the root directory (or where `service.py` is located):
-
-```bash
-# Install dependencies
-pip install fastapi uvicorn firebase-admin google-cloud-firestore python-multipart
-
-# Run Service
-uvicorn service:app --reload --port 8000
-```

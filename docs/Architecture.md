@@ -18,11 +18,6 @@ MainBranch is a "Tech-Native" social platform for developers, integrating their 
 *   **Framework**: Express.js
 *   **Database**: MongoDB (Mongoose ODM)
 *   **Real-time**: Socket.IO Server
-*   **Auth**: JWT (JSON Web Tokens)
-
-### Microservice (ML/Resume)
-*   **Framework**: FastAPI (Python)
-*   **Purpose**: AI-powered resume generation and PDF rendering.
 
 ## Directory Structure
 
