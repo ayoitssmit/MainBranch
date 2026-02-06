@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const code = searchParams.get('code');
@@ -18,9 +18,9 @@ export default function AuthCallbackPage() {
                 try {
                     // Call our Express Backend
                     const response = await api.post('/auth/github', { code });
-                    
+
                     const { token, _id } = response.data;
-                    
+
                     // Save to localStorage
                     localStorage.setItem('token', token);
                     localStorage.setItem('userId', _id);
@@ -36,7 +36,7 @@ export default function AuthCallbackPage() {
             };
             loginWithGithub();
         } else if (!code) {
-             router.push('/login?error=no_code_provided');
+            router.push('/login?error=no_code_provided');
         }
     }, [code, router]);
 
@@ -46,5 +46,17 @@ export default function AuthCallbackPage() {
             <h2 className="text-xl font-mono">Authenticating...</h2>
             <p className="text-gray-500 mt-2">Connecting to GitHub</p>
         </div>
+    );
+}
+
+export default function AuthCallbackPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-[hsl(var(--ide-bg))] text-white">
+                <Loader2 className="w-10 h-10 animate-spin text-cyan-500 mb-4" />
+            </div>
+        }>
+            <AuthCallbackContent />
+        </React.Suspense>
     );
 }
