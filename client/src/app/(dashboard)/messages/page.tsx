@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react';
 
 import { useSearchParams } from 'next/navigation';
 
-export default function MessagesPage() {
+function MessagesContent() {
     const { user } = useAuth();
     const { socket } = useSocket();
     const searchParams = useSearchParams();
@@ -51,32 +51,6 @@ export default function MessagesPage() {
 
         if (user) fetchConversationsAndTarget();
     }, [user, initialUserId]);
-
-    // Real-time Updates
-    useEffect(() => {
-        if (!socket) return;
-
-        const handleReceiveMessage = (data: any) => {
-            const { message, sender } = data;
-
-            setConversations(prev => {
-                // Remove existing conversation with this user if present
-                const filtered = prev.filter(c => c.partner._id !== sender._id);
-
-                // Find existing conv to get current unread count
-                const existing = prev.find(c => c.partner._id === sender._id);
-                // We need to check selectedUser *inside* the updater to allow it to be fresh if we want to avoid dependency, 
-                // BUT selectedUser state is in the outer scope. 
-                // To avoid adding selectedUser to dependency (which causes re-subscribing on every click), 
-                // we can use a ref for selectedUser OR just accept the re-subscription.
-                // The error "changed size" implies the array literal length changed.
-
-                // Let's rely on a Ref for the current selectedUser to avoid changing the listener constantly.
-                return filtered; // Placeholder to be replaced by full logic below
-            });
-        };
-        // Refill full logic via simple replacement
-    }, [socket]); // We will revert to just socket and handle selectedUser via Ref or functional update tricks if needed.
 
     // Better approach: Use a ref to track selected ID so we don't need to rebuild the listener.
     const selectedUserRef = React.useRef(selectedUser);
@@ -189,5 +163,17 @@ export default function MessagesPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function MessagesPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="animate-spin text-cyan-500" size={32} />
+            </div>
+        }>
+            <MessagesContent />
+        </React.Suspense>
     );
 }

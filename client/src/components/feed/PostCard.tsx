@@ -9,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 import ShareModal from './ShareModal';
 import ImageModal from '../shared/ImageModal';
+import CommentThread from './CommentThread';
 
 interface Post {
   _id: string;
@@ -57,8 +58,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [replyContent, setReplyContent] = useState('');
+  // Removed unused state for internal reply handling
   const [commentTree, setCommentTree] = useState<Comment[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
@@ -148,77 +148,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
     });
     return roots;
   };
-  const renderComment = (comment: Comment, depth = 0) => {
-    const isCommentLiked = user && comment.upvotes?.includes(user._id);
-    const canDelete = user && comment.author && comment.author._id?.toString() === user._id.toString();
-    return (
-      <div key={comment._id} className="flex gap-2" style={{ marginLeft: depth * 20 }}>
-        <img
-          src={comment.author?.avatarUrl || `https://ui-avatars.com/api/?name=${comment.author?.username}`}
-          className="w-8 h-8 rounded-full mt-1 border border-gray-700"
-          alt="avatar"
-        />
-        <div className="flex-1">
-          <div className="bg-gray-800/50 rounded-md p-2.5 inline-block min-w-[200px]">
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold text-white text-xs hover:underline cursor-pointer">
-                {comment.author?.displayName || comment.author?.username}
-              </span>
-              <span className="text-[10px] text-gray-500 ml-2">
-                {formatDistanceToNow(new Date(comment.createdAt))}
-              </span>
-            </div>
-            <p className="text-gray-300 text-sm leading-snug break-words">{comment.content}</p>
-          </div>
-          <div className="flex items-center gap-3 mt-1 ml-1 text-[11px] text-gray-500 font-medium">
-            <button
-              onClick={() => handleCommentVote(comment._id)}
-              className={`hover:text-cyan-400 hover:underline transition-colors ${isCommentLiked ? 'text-cyan-500' : ''}`}
-            >
-              Like{comment.upvotes?.length > 0 && <span className="ml-1">{comment.upvotes.length}</span>}
-            </button>
-            <span>|</span>
-            <button
-              className="hover:text-cyan-400 hover:underline transition-colors"
-              onClick={() => setReplyingTo(comment._id)}
-            >
-              Reply
-            </button>
-            {canDelete && (
-              <button
-                className="hover:text-red-400 hover:underline transition-colors"
-                onClick={() => handleDeleteComment(comment._id, comment.parentComment)}
-              >
-                <Trash2 size={14} />
-              </button>
-            )}
-          </div>
-          {replyingTo === comment._id && (
-            <form onSubmit={handleReplySubmit} className="mt-2 flex items-center gap-2">
-              <input
-                className="w-full bg-gray-800/50 border border-gray-700 rounded-full py-1 px-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-gray-500"
-                placeholder="Write a reply..."
-                value={replyContent}
-                onChange={(e) => setReplyContent(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="text-cyan-500 hover:text-cyan-400 disabled:opacity-50"
-                disabled={isSubmittingComment}
-              >
-                Send
-              </button>
-            </form>
-          )}
-          {comment.children && comment.children.length > 0 && (
-            <div className="mt-2">
-              {comment.children.map((child) => renderComment(child, depth + 1))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+  // renderComment function removed in favor of CommentThread component
 
   const handleLike = async () => {
     if (!user) return;
@@ -267,21 +197,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
     }
   };
 
-  const handleReplySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !replyContent.trim() || !replyingTo) return;
-    setIsSubmittingComment(true);
-    try {
-      const { data } = await api.post(`/posts/${post._id}/comments`, { content: replyContent, parentComment: replyingTo });
-      setComments([data, ...comments]);
-      setReplyContent('');
-      setReplyingTo(null);
-    } catch (error) {
-      console.error('Reply submit error:', error);
-    } finally {
-      setIsSubmittingComment(false);
-    }
-  };
+  // Removed unused handleReplySubmit
 
   const handleCommentVote = async (commentId: string) => {
     if (!user) return;
@@ -375,16 +291,19 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
   };
 
   return (
-    <article className="group bg-[hsl(var(--ide-bg))]/40 backdrop-blur-sm border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden mb-4 hover:border-gray-600 transition-all duration-300 relative">
+    <article
+      onClick={() => router.push(`/post/${post.slug || post._id}`)}
+      className="group bg-[hsl(var(--ide-bg))]/40 backdrop-blur-sm border border-[hsl(var(--ide-border))] rounded-lg overflow-hidden mb-4 hover:border-gray-600 transition-all duration-300 relative cursor-pointer"
+    >
 
       {/* Tech Corner Accent */}
-      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
         <div className="w-16 h-16 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.1),transparent_70%)]" />
       </div>
 
       {/* Header */}
       <div className="p-4 flex gap-3 text-sm relative z-10">
-        <Link href={`/profile/${post.author.username}`} className="relative">
+        <Link href={`/profile/${post.author.username}`} onClick={(e) => e.stopPropagation()} className="relative">
           <div className="absolute -inset-0.5 rounded-full blur opacity-50 bg-gray-500/20 group-hover:bg-cyan-500/30 transition-colors" />
           <img
             src={post.author.avatarUrl || `https://ui-avatars.com/api/?name=${post.author.username}&background=0f172a&color=38bdf8`}
@@ -395,7 +314,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
             <div className="mr-6">
-              <Link href={`/profile/${post.author.username}`} className="font-bold text-gray-200 tracking-wide hover:text-cyan-400 transition-colors cursor-pointer truncate block">
+              <Link href={`/profile/${post.author.username}`} onClick={(e) => e.stopPropagation()} className="font-bold text-gray-200 tracking-wide hover:text-cyan-400 transition-colors cursor-pointer truncate block">
                 {post.author.displayName || post.author.username}
               </Link>
               <div className="flex items-center gap-2 mt-0.5">
@@ -410,12 +329,15 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
             </div>
             <div className="flex items-center gap-2">
               {canDeletePost && (
-                <button className="text-red-900/40 hover:text-red-500 transition-colors" onClick={handleDeletePost}>
+                <button
+                  className="text-red-900/40 hover:text-red-500 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); handleDeletePost(); }}
+                >
                   <Trash2 size={16} />
                 </button>
               )}
               <button
-                onClick={handleBookmark}
+                onClick={(e) => { e.stopPropagation(); handleBookmark(); }}
                 className={`transition-colors ${isBookmarked ? 'text-[hsl(var(--primary))] fill-[hsl(var(--primary))]' : 'text-gray-600 hover:text-gray-300'}`}
               >
                 <Bookmark size={18} className={isBookmarked ? 'fill-current' : ''} />
@@ -428,8 +350,8 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
       {/* Content */}
       <div className="px-4 pb-3">
         <div
-          onClick={() => router.push(`/post/${post.slug || post._id}`)}
-          className={`block text-sm text-gray-300 whitespace-pre-wrap leading-relaxed hover:text-gray-200 transition-colors mb-1 block relative cursor-pointer ${!isContentExpanded && shouldTruncate ? 'max-h-[6em] overflow-hidden' : ''}`}
+          /* Removed onClick here as it's now on the article */
+          className={`block text-sm text-gray-300 whitespace-pre-wrap leading-relaxed hover:text-gray-200 transition-colors mb-1 block relative ${!isContentExpanded && shouldTruncate ? 'max-h-[6em] overflow-hidden' : ''}`}
         >
           {renderContentWithMentions(displayContent)}
           {!isContentExpanded && shouldTruncate && (
@@ -440,6 +362,7 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
           <button
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               setIsContentExpanded(!isContentExpanded);
             }}
             className="text-cyan-500 hover:text-cyan-400 text-xs font-semibold mt-1 focus:outline-none"
@@ -450,7 +373,10 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
       </div>
 
       {post.image && (
-        <div className="mt-2 mb-2 border-y border-[hsl(var(--ide-border))] bg-black/50 cursor-pointer" onClick={() => setExpandedImage(`${BASE_URL}${post.image}`)}>
+        <div
+          className="mt-2 mb-2 border-y border-[hsl(var(--ide-border))] bg-black/50 cursor-pointer"
+          onClick={(e) => { e.stopPropagation(); setExpandedImage(`${BASE_URL}${post.image}`); }}
+        >
           <img
             src={`${BASE_URL}${post.image}`}
             alt="Post content"
@@ -474,34 +400,37 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
       {/* Action Buttons */}
       <div className="grid grid-cols-4 gap-px bg-[hsl(var(--ide-border))] border-t border-[hsl(var(--ide-border))]">
         <button
-          onClick={handleLike}
+          onClick={(e) => { e.stopPropagation(); handleLike(); }}
           className={`flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors ${isLiked ? 'text-cyan-400' : 'text-gray-400'}`}
         >
           <ThumbsUp size={16} className={isLiked ? "fill-current" : ""} />
         </button>
         <button
-          onClick={toggleComments}
+          onClick={(e) => { e.stopPropagation(); toggleComments(); }}
           className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white"
         >
           <MessageSquare size={16} />
         </button>
         <button
-          onClick={handleShare}
+          onClick={(e) => { e.stopPropagation(); handleShare(); }}
           className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white"
         >
           <Send size={16} />
         </button>
         <button
-          onClick={handleCopyLink}
+          onClick={(e) => { e.stopPropagation(); handleCopyLink(); }}
           className="flex items-center justify-center gap-2 py-3 bg-[hsl(var(--ide-bg))] hover:bg-white/5 transition-colors text-gray-400 hover:text-white"
         >
           {copied ? <Check size={16} className="text-green-500" /> : <Globe size={16} />}
         </button>
       </div>
 
-      {/* Inline Comments Section */}
+      {/* Inline Comments Section - Wrapped in a div preventing propagation */}
       {showComments && (
-        <div className="bg-black/20 p-4 border-t border-[hsl(var(--ide-border))] animate-in slide-in-from-top-2 duration-200">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-black/20 p-4 border-t border-[hsl(var(--ide-border))] animate-in slide-in-from-top-2 duration-200 cursor-default"
+        >
           {user && (
             <div className="flex items-start gap-3 mb-6">
               <img
@@ -538,27 +467,44 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
             </div>
           ) : (
             <div className="space-y-4">
-              {commentTree.map((c) => renderComment(c))}
+              {commentTree.map((c) => (
+                <CommentThread
+                  key={c._id}
+                  comment={c}
+                  userId={user?._id}
+                  onVote={handleCommentVote}
+                  onReply={async (commentId, content) => {
+                    const { data } = await api.post(`/posts/${post._id}/comments`, { content, parentComment: commentId });
+                    setComments([data, ...comments]);
+                    setPost({ ...post, commentsCount: (post.commentsCount || 0) + 1 });
+                  }}
+                  onDelete={handleDeleteComment}
+                />
+              ))}
             </div>
           )}
         </div>
       )}
       {/* Share Modal */}
       {showShareModal && user && (
-        <ShareModal
-          isOpen={showShareModal}
-          onClose={() => setShowShareModal(false)}
-          users={user.following || []}
-          onSend={handleSendShare}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ShareModal
+            isOpen={showShareModal}
+            onClose={() => setShowShareModal(false)}
+            users={user.following || []}
+            onSend={handleSendShare}
+          />
+        </div>
       )}
 
       {/* Image Modal */}
       {expandedImage && (
-        <ImageModal
-          src={expandedImage}
-          onClose={() => setExpandedImage(null)}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ImageModal
+            src={expandedImage}
+            onClose={() => setExpandedImage(null)}
+          />
+        </div>
       )}
     </article>
   );

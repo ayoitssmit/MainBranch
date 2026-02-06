@@ -166,6 +166,7 @@ const likePost = async (req, res) => {
 const createComment = async (req, res) => {
     try {
         const { content, parentComment } = req.body;
+        console.log('Creating comment:', { content, parentComment, user: req.user._id, postId: req.params.id });
         const post = await Post.findById(req.params.id);
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
@@ -219,8 +220,8 @@ const createComment = async (req, res) => {
             }
         }
 
-        await comment.populate('author', 'displayName username avatarUrl');
-        res.json(comment);
+        const populatedComment = await Comment.findById(comment._id).populate('author', 'displayName username avatarUrl');
+        res.json(populatedComment);
     } catch (error) {
         console.error('Create Comment Error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });

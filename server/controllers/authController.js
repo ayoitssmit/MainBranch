@@ -25,7 +25,8 @@ const githubAuth = async (req, res) => {
         const tokenResponse = await axios.post('https://github.com/login/oauth/access_token', {
             client_id: process.env.GITHUB_CLIENT_ID,
             client_secret: process.env.GITHUB_CLIENT_SECRET,
-            code
+            code,
+            redirect_uri: `${process.env.CLIENT_URL}/api/auth/callback`
         }, {
             headers: { Accept: 'application/json' }
         });
@@ -33,7 +34,8 @@ const githubAuth = async (req, res) => {
         const { access_token } = tokenResponse.data;
 
         if (!access_token) {
-            return res.status(400).json({ message: 'Invalid code or GitHub error' });
+            console.error('GitHub Token Exchange Failed:', tokenResponse.data);
+            return res.status(400).json({ message: 'Invalid code or GitHub error', details: tokenResponse.data });
         }
 
         // 2. Get user profile from GitHub
