@@ -76,12 +76,25 @@ export default function ImageUpload({ value, onChange, placeholder = "Upload Ima
         return `${BASE_URL}${path}`; 
     };
 
+    const sanitizeUrl = (url: string) => {
+        try {
+            const parsed = new URL(url);
+            // Only allow HTTP/HTTPS to prevent javascript: and vbscript: XSS
+            if (['http:', 'https:'].includes(parsed.protocol)) {
+                return parsed.href;
+            }
+        } catch (_) { }
+        // Fallback for safe relative backend paths
+        if (url.startsWith('/')) return url;
+        return '/final logo.png'; // Safe fallback
+    };
+
     return (
         <div className={`relative ${className}`}>
              {value ? (
                 <div className="relative w-full h-48 bg-black/40 rounded-lg overflow-hidden border border-gray-700">
                     <img 
-                        src={getImageUrl(value)} 
+                        src={sanitizeUrl(getImageUrl(value))} 
                         alt="Uploaded" 
                         className="w-full h-full object-cover"
                     />

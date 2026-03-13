@@ -97,13 +97,16 @@ const getAllPosts = async (req, res) => {
 // @access  Public
 const getPostBySlug = async (req, res) => {
     try {
-        const post = await Post.findOne({ slug: req.params.slug })
-            .populate('author', 'displayName username avatarUrl');
-
+        // Cast slug to string to prevent NoSQL object injection
+        const slug = String(req.params.slug);
+        const post = await Post.findOne({ slug })
+            .populate('author', 'displayName username avatarUrl headline')
+            .populate('comments.user', 'displayName username avatarUrl');
+            
         if (!post) {
-            // Fallback: Check if valid ObjectId
-            if (req.params.slug.match(/^[0-9a-fA-F]{24}$/)) {
-                const postById = await Post.findById(req.params.slug).populate('author', 'displayName username avatarUrl');
+            // Check if it's an ID instead of slug
+            if (slug.match(/^[0-9a-fA-F]{24}$/)) {
+                const postById = await Post.findById(slug).populate('author', 'displayName username avatarUrl');
                 if (postById) return res.json(postById);
             }
             return res.status(404).json({ message: 'Post not found' });

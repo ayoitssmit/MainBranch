@@ -42,8 +42,8 @@ const syncUserStats = async (req, res) => {
 
         await Promise.all(syncPromises);
 
-        // Fetch updated user to return
-        const updatedUser = await User.findById(req.user._id);
+        // Fetch updated user to return without sensitive tokens
+        const updatedUser = await User.findById(req.user._id).select('-password -integrations.github.accessToken -integrations.leetcode.accessToken -accessToken');
 
         // Refresh legacy stats objects if needed (Optional: UI often reads from user.integrations now)
         // But for safety, map them back if your UI expects user.stats.github
@@ -70,7 +70,7 @@ const syncUserStats = async (req, res) => {
 // @access  Private
 const updateUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id).select('-password -integrations.github.accessToken -integrations.leetcode.accessToken -accessToken');
 
         if (user) {
             // Basic Fields
@@ -435,7 +435,9 @@ const getUserById = async (req, res) => {
 // Get User by Username (Public)
 const getUserByUsername = async (req, res) => {
     try {
-        const user = await User.findOne({ username: req.params.username })
+        // Cast to string to prevent NoSQL object injection (e.g., {"$ne": null})
+        const username = String(req.params.username);
+        const user = await User.findOne({ username })
             .select('-password -__v -email') // Exclude sensitive info. Email might be needed if public, but safer to hide by default.
             .populate('followers', 'username displayName avatarUrl')
             .populate('following', 'username displayName avatarUrl');
@@ -453,7 +455,9 @@ const getUserByUsername = async (req, res) => {
 // Get User Heatmap (Last 365 Days)
 const getUserHeatmap = async (req, res) => {
     try {
-        const user = await User.findOne({ username: req.params.username });
+        // Cast to string to prevent NoSQL object injection
+        const username = String(req.params.username);
+        const user = await User.findOne({ username });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check for new contributionCalendar data first (GraphQL)

@@ -141,6 +141,7 @@ const githubAuth = async (req, res) => {
 const getMe = async (req, res) => {
     // Re-fetch user to ensure populated fields
     const user = await User.findById(req.user._id)
+        .select('-password -integrations.github.accessToken -integrations.leetcode.accessToken')
         .populate('followRequests', 'username displayName avatarUrl headline')
         .populate('followers', 'username displayName avatarUrl headline')
         .populate('following', 'username displayName avatarUrl headline');
@@ -206,7 +207,9 @@ const registerUser = async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    // Cast to string to prevent NoSQL injection via object query operators (e.g. {"$ne": null})
+    const email = String(req.body.email);
+    const password = String(req.body.password);
 
     try {
         const user = await User.findOne({ email }).select('+password');

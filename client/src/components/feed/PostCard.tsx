@@ -2,6 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import api, { BASE_URL } from '@/lib/api';
+
+const sanitizeUrl = (url: string) => {
+    if (!url) return '';
+    try {
+        const parsed = new URL(url);
+        if (['http:', 'https:'].includes(parsed.protocol)) {
+            return parsed.href;
+        }
+    } catch (_) { }
+    if (url.startsWith('/')) return url;
+    return '/final logo.png'; // Safe fallback
+};
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MessageSquare, ThumbsUp, Send, Globe, Loader2, Trash2, Clock, Check, Bookmark } from 'lucide-react';
@@ -377,11 +389,11 @@ export default function PostCard({ post: initialPost, onPostDeleted }: PostCardP
           className="mt-2 mb-2 border-y border-[hsl(var(--ide-border))] bg-black/50 cursor-pointer"
           onClick={(e) => { 
             e.stopPropagation(); 
-            setExpandedImage(post.image!.startsWith('http') || post.image!.startsWith('https://res.cloudinary.com') ? post.image as string : `${BASE_URL}${post.image}`); 
+            setExpandedImage(sanitizeUrl(post.image!.startsWith('http') || post.image!.startsWith('https://res.cloudinary.com') ? post.image as string : `${BASE_URL}${post.image}`)); 
           }}
         >
           <img
-            src={post.image.startsWith('http') || post.image.startsWith('https://res.cloudinary.com') ? post.image : `${BASE_URL}${post.image}`}
+            src={sanitizeUrl(post.image.startsWith('http') || post.image.startsWith('https://res.cloudinary.com') ? post.image : `${BASE_URL}${post.image}`)}
             alt="Post content"
             className="w-full h-auto object-cover max-h-[500px]"
           />

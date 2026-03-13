@@ -3,7 +3,20 @@
 import Link from 'next/link';
 
 import React, { useEffect, useState, useRef } from 'react';
-import api, { BASE_URL } from '@/lib/api';
+import { BASE_URL } from '@/lib/api';
+
+const sanitizeUrl = (url: string) => {
+    if (!url) return '';
+    try {
+        const parsed = new URL(url);
+        if (['http:', 'https:'].includes(parsed.protocol)) {
+            return parsed.href;
+        }
+    } catch (_) { }
+    if (url.startsWith('/')) return url;
+    return '/final logo.png'; // Safe fallback
+};
+import api from '@/lib/api';
 import { useSocket } from '@/context/SocketContext';
 import { useAuth } from '@/hooks/useAuth';
 import ImageModal from '../shared/ImageModal';
@@ -336,8 +349,8 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
                                     <div className={`max-w-[75%] relative ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
 
                                         {msg.image && (
-                                            <div className="mb-2 cursor-pointer" onClick={() => setExpandedImage(msg.image.startsWith('http') || msg.image.startsWith('https://res.cloudinary.com') ? msg.image : `${BASE_URL}${msg.image}`)}>
-                                                <img src={msg.image.startsWith('http') || msg.image.startsWith('https://res.cloudinary.com') ? msg.image : `${BASE_URL}${msg.image}`} alt="Attachment" className="rounded-lg w-72 h-48 object-cover border border-gray-700/50" />
+                                            <div className="mb-2 cursor-pointer" onClick={() => setExpandedImage(sanitizeUrl(msg.image.startsWith('http') || msg.image.startsWith('https://res.cloudinary.com') ? msg.image : `${BASE_URL}${msg.image}`))}>
+                                                <img src={sanitizeUrl(msg.image.startsWith('http') || msg.image.startsWith('https://res.cloudinary.com') ? msg.image : `${BASE_URL}${msg.image}`)} alt="Attachment" className="rounded-lg w-72 h-48 object-cover border border-gray-700/50" />
                                             </div>
                                         )}
 
