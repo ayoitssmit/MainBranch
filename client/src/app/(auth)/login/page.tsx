@@ -55,7 +55,7 @@ export default function LoginPage() {
             <div className="w-full max-w-md bg-[hsl(var(--ide-sidebar))] border border-[hsl(var(--ide-border))] rounded-lg shadow-xl p-8">
                 <div className="flex flex-col items-center mb-6">
                     <div className="w-20 h-20 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-                        <img src="/logo.png" alt="MainBranch Logo" className="w-full h-full object-contain" />
+                        <img src="/main logo.png" alt="MainBranch Logo" className="w-full h-full object-contain" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">MainBranch</h1>
                     <p className="text-gray-400 text-center text-sm">

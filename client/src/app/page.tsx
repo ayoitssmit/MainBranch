@@ -13,7 +13,7 @@ export default function Home() {
       {/* Top Header Nav */}
       <nav className="z-50 w-full max-w-7xl flex items-center justify-between pb-2">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="MainBranch Logo" className="w-10 h-10 object-contain drop-shadow-md" />
+          <img src="/main logo.png" alt="MainBranch Logo" className="w-10 h-10 object-contain drop-shadow-md" />
           <span className="font-abel text-3xl font-bold tracking-wider text-white shadow-primary/20 drop-shadow-lg">MainBranch</span>
         </div>
         <Link
@@ -33,7 +33,7 @@ export default function Home() {
                 MainBranch
             </h1>
             <p className="text-slate-300 text-xl font-light tracking-wide max-w-2xl leading-relaxed mt-2">
-                Unify your GitHub, LeetCode, and Kaggle metrics into one dynamic developer portfolio. Showcase your best work organically and network directly with top engineers worldwide in real-time.
+                Build once. Show everywhere. Connect with developers who ship.
             </p>
             <div className="pt-4 flex gap-4">
                  <Link href="/login" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-bold transition-colors shadow-[0_0_20px_rgba(166,75,42,0.3)]">

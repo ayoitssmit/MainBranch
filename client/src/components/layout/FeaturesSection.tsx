@@ -106,8 +106,8 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Floating Icons */}
-          <div className="absolute inset-0 pointer-events-none">
+          {/* Floating Icons — hidden on mobile to avoid collision */}
+          <div className="absolute inset-0 pointer-events-none hidden md:block">
             {card.icons.map(({ Icon, pos, color, size, float }, j) => (
               <motion.div
                 key={j}
