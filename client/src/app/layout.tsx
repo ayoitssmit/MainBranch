@@ -9,6 +9,9 @@ const abel = Abel({ weight: "400", subsets: ["latin"], variable: "--font-abel" }
 export const metadata: Metadata = {
   title: "MainBranch",
   description: "Identity for Developers",
+  icons: {
+    icon: "/final logo.png",
+  },
 };
 
 export default function RootLayout({
