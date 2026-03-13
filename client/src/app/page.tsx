@@ -13,7 +13,7 @@ export default function Home() {
       {/* Top Header Nav */}
       <nav className="z-50 w-full max-w-7xl flex items-center justify-between pb-2">
         <div className="flex items-center gap-3">
-          <img src="/main logo.png" alt="MainBranch Logo" className="w-10 h-10 object-contain drop-shadow-md" />
+          <img src="/final logo.png" alt="MainBranch Logo" className="w-10 h-10 object-contain drop-shadow-md" />
           <span className="font-abel text-3xl font-bold tracking-wider text-white shadow-primary/20 drop-shadow-lg">MainBranch</span>
         </div>
         <Link

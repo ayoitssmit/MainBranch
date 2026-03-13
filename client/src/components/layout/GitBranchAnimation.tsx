@@ -43,11 +43,11 @@ export default function GitBranchAnimation() {
     })
   };
 
-  if (!mounted) return <div className="w-[600px] h-[500px]" />;
+  if (!mounted) return <div className="w-full h-[350px] md:h-[500px]" />;
 
   return (
-    <div className="relative w-full h-[500px] flex items-center justify-center">
-      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible filter drop-shadow-[0_0_12px_rgba(166,75,42,0.6)]">
+    <div className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
+      <svg width="100%" height="100%" viewBox={`50 0 400 ${height}`} preserveAspectRatio="xMidYMid meet" className="overflow-visible filter drop-shadow-[0_0_12px_rgba(166,75,42,0.6)]">
         <defs>
           <filter id="glow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
             <feGaussianBlur stdDeviation="5" result="blur" />
