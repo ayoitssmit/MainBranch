@@ -100,8 +100,7 @@ const getPostBySlug = async (req, res) => {
         // Cast slug to string to prevent NoSQL object injection
         const slug = String(req.params.slug);
         const post = await Post.findOne({ slug })
-            .populate('author', 'displayName username avatarUrl headline')
-            .populate('comments.user', 'displayName username avatarUrl');
+            .populate('author', 'displayName username avatarUrl headline');
             
         if (!post) {
             // Check if it's an ID instead of slug
