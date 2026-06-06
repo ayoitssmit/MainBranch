@@ -1,5 +1,7 @@
 # MainBranch
 
+![GitHub top language](https://img.shields.io/github/languages/top/Jalpan04/Mainbranch) ![GitHub repo size](https://img.shields.io/github/repo-size/Jalpan04/Mainbranch) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ![Next JS](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
