@@ -137,4 +137,4 @@ Contributions to MainBranch are actively welcomed. To contribute respectfully, p
 
 ## License
 
-This project is licensed under the MIT License. Please refer to the LICENSE file for exact details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
