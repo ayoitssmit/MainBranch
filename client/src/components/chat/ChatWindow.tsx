@@ -214,9 +214,7 @@ export default function ChatWindow({ recipient, onBack, onMessageSent }: ChatWin
             if (messageInput.trim()) formData.append('content', messageInput);
             if (selectedFile) formData.append('image', selectedFile);
 
-            const { data } = await api.post('/chat', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            const { data } = await api.post('/chat', formData);
 
             setMessages((prev) => [...prev, data]);
             setMessageInput('');

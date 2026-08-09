@@ -25,11 +25,7 @@ export default function ImageUpload({ value, onChange, placeholder = "Upload Ima
         formData.append('image', file);
 
         try {
-            const { data } = await api.post('/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const { data } = await api.post('/upload', formData);
             // Assuming the server returns { filePath: "/uploads/filename.ext" }
             // We need to prepend the server URL if it's returning a relative path, 
             // BUT api.ts is for axios base URL. 
