@@ -50,9 +50,10 @@ export default function ImageUpload({ value, onChange, placeholder = "Upload Ima
             // Let's assume the server returns a path we can use. 
             // Let's try to just return what the server gave us for now.
             onChange(data.filePath); 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Upload failed', error);
-            alert('Failed to upload image');
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to upload image';
+            alert('Upload failed: ' + errorMessage);
         } finally {
             setUploading(false);
             if (fileInputRef.current) {

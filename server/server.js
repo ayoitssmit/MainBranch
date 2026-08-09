@@ -59,6 +59,12 @@ app.get('/', (req, res) => {
     res.send('MainBranch API is running...');
 });
 
+// Global Error Handler for Multer/Cloudinary errors
+app.use((err, req, res, next) => {
+    console.error('Server Error:', err.message || err);
+    res.status(500).json({ message: err.message || 'Internal Server Error' });
+});
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
